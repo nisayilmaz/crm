@@ -31,15 +31,11 @@
         </div>
         <ul class="navbar-nav justify-content-end">
           <li class="nav-item d-flex align-items-center">
-            <router-link
-              :to="{ name: 'Sign In' }"
-              class="px-0 nav-link font-weight-bold"
-              :class="textWhite ? textWhite : 'text-body'"
+            <a style="cursor: pointer" @click="logout"
             >
-              <i class="fa fa-user" :class="$store.state.isRTL ? 'ms-sm-2' : 'me-sm-1'"></i>
-              <span v-if="$store.state.isRTL" class="d-sm-inline d-none">يسجل دخول</span>
-              <span v-else class="d-sm-inline d-none">Sign In</span>
-            </router-link>
+              <i class="fa fa-user me-sm-1" ></i>
+              <span class="d-sm-inline d-none">Çıkış Yap</span>
+            </a>
           </li>
           <li class="nav-item  ps-3 d-flex align-items-center">
             <a
@@ -189,6 +185,7 @@
 <script>
 import Breadcrumbs from "../Breadcrumbs.vue";
 import { mapMutations, mapActions } from "vuex";
+import axios from "axios";
 
 export default {
   name: "NavbarComponent",
@@ -235,6 +232,19 @@ export default {
   }, methods: {
     ...mapMutations(["navbarMinimize", "toggleConfigurator"]),
     ...mapActions(["toggleSidebarColor"]),
+      async logout(e) {
+          e.preventDefault();
+          let request = await axios.post(`http://${window.location.hostname}:5000/api/auth/logout/`, null, {
+              headers: {
+                  Authorization : `${localStorage.getItem("accessToken")}`
+              }
+          });
+          if(request.status === 204) {
+              localStorage.removeItem("accessToken");
+              this.$router.push('/sign-in')
+
+          }
+      },
 
     toggleSidebar() {
       this.toggleSidebarColor("bg-pink");

@@ -1,14 +1,11 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import Dashboard from "@/views/Dashboard.vue";
-import Billing from "@/views/Billing.vue";
-import VirtualReality from "@/views/VirtualReality.vue";
-import Profile from "@/views/Profile.vue";
 import SignIn from "@/views/SignIn.vue";
-import SignUp from "@/views/SignUp.vue";
 import Projects from "@/views/Projects.vue";
 import Companies from "@/views/Companies.vue";
 import Partners from "@/views/Partners.vue";
 import People from "@/views/People.vue";
+import Users from "@/views/Users.vue";
 
 const routes = [
   {
@@ -20,51 +17,54 @@ const routes = [
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/kurumlar",
     name: "Companies",
     component: Companies,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/is-ortaklari",
     name: "Partners",
     component: Partners,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/projeler",
     name: "Projects",
     component: Projects,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/kisiler",
     name: "People",
     component: People,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
-    path: "/billing",
-    name: "Billing",
-    component: Billing,
-  },
-  {
-    path: "/virtual-reality",
-    name: "Virtual Reality",
-    component: VirtualReality,
-  },
-  {
-    path: "/profile",
-    name: "Profile",
-    component: Profile,
+    path: "/hesaplar",
+    name: "Users",
+    component: Users,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/sign-in",
     name: "Sign In",
     component: SignIn,
-  },
-  {
-    path: "/sign-up",
-    name: "Sign Up",
-    component: SignUp,
   },
 ];
 

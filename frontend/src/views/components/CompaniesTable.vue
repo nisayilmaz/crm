@@ -117,37 +117,54 @@ export default {
       },
   },
   async created() {
-    const response = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/${this.type}`);
-    if (!Array.isArray(response.data.data)){
-      this.companies = []
-    }
-    else {
-      this.companies = response.data.data;
-    }
+      try {
+          const response = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/${this.type}`, {
+              headers: {
+                  Authorization : `${localStorage.getItem("accessToken")}`
+              }
+          });
+          if (response.status === 200) {
+              if (!Array.isArray(response.data.data)){
+                  this.companies = []
+              }
+              else {
+                  this.companies = response.data.data;
+              }
+          }
+      }
+      catch (err) {
+        console.log("log in")
+      }
+
+
   },
   methods: {
     async addCompany(e) {
       e.preventDefault();
-      const response = await axios.post(`http://${window.location.hostname}:5000/api/kurumlar/`, {
-        name: this.name,
-        role: this.type,
-        email: this.email,
-        address: this.address,
-        phone: this.phone
-      });
-      if(response.data.status === "success") {
-          this.companies.push(response.data.data);
-          this.name = "";
-          this.email = "";
-          this.address = "";
-          this.phone = "";
+      try {
+          const response = await axios.post(`http://${window.location.hostname}:5000/api/kurumlar/`, {
+              name: this.name,
+              role: this.type,
+              email: this.email,
+              address: this.address,
+              phone: this.phone
+          }, {headers: {
+              Authorization : `${localStorage.getItem("accessToken")}`
+          }});
+          this.companies.push(response.data.data)
       }
+      catch (error) {
 
+        alert(error)
+      }
     },
 
     async deleteCompany(e, id) {
       e.preventDefault();
-      await axios.delete(`http://${window.location.hostname}:5000/api/kurumlar/${id}`);
+      await axios.delete(`http://${window.location.hostname}:5000/api/kurumlar/${id}`, {
+          headers: {
+              Authorization : `${localStorage.getItem("accessToken")}`
+          }});
       this.companies = this.companies.filter(company => company.id !== id);
     },
   }

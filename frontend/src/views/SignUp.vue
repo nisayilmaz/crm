@@ -94,7 +94,8 @@
           <div class="card-body">
             <form role="form">
               <div class="mb-3">
-                <vsud-input type="text" placeholder="Name" aria-label="Name" />
+                  {{data}}
+                <vsud-input v-model:value="data" type="text" placeholder="Name" aria-label="Name" />
               </div>
               <div class="mb-3">
                 <vsud-input type="email" placeholder="Email" aria-label="Email" />
@@ -147,7 +148,8 @@ export default {
   },
   data() {
     return {
-      bgImg
+      bgImg,
+        data:"initial"
     }
   },
   created() {

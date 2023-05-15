@@ -5,9 +5,13 @@ from rest_framework import status, generics
 from rest_framework import permissions
 from .models import Company, People, Project
 from .serializers import *
+from knox.auth import TokenAuthentication as KnoxTokenAuthentication
 
 
 class CompanyApiView(APIView):
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request, *args, **kwargs):
         companies = Company.objects.all()
         serializer = CompanySerializer(companies, many=True)
@@ -30,6 +34,8 @@ class CompanyApiView(APIView):
 
 
 class CompanyByRoleList(APIView):
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = CompanySerializer
 
     def get(self, request, role):
@@ -42,6 +48,8 @@ class CompanyByRoleList(APIView):
 
 
 class CompanyApiDetailView(APIView):
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, pk):
         try:
             company = Company.objects.get(pk=pk)
@@ -60,6 +68,8 @@ class CompanyApiDetailView(APIView):
 
 
 class PeopleApiView(APIView):
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         people = People.objects.all()
         serializer = PeopleSerializer(people, many=True)
@@ -81,6 +91,8 @@ class PeopleApiView(APIView):
 
 
 class PeopleApiDetailView(APIView):
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, pk):
         try:
             person = People.objects.get(pk=pk)
@@ -99,6 +111,8 @@ class PeopleApiDetailView(APIView):
 
 
 class ProjectApiView(APIView):
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         projects = Project.objects.all()
         serializer = ProjectSerializer(projects, many=True)
@@ -129,6 +143,8 @@ class ProjectApiView(APIView):
         return Response({'status': 'failed', 'data': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class ProjectApiDetailView(APIView):
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, pk):
         try:
             project = Project.objects.get(pk=pk)
@@ -146,6 +162,8 @@ class ProjectApiDetailView(APIView):
             return Response({'status': 'failed', 'data': []}, status=status.HTTP_204_NO_CONTENT)
 
 class ProductApiView(APIView):
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)

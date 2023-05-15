@@ -11,6 +11,7 @@
         :class="getClasses(size, valid)"
         :name="name"
         :value="value"
+        @input="inputChange"
         :placeholder="placeholder"
         :isRequired="isRequired"
       />
@@ -63,7 +64,11 @@ export default {
     },
     isRequired: Boolean,
   },
+emits: ['input', 'update:value'],
   methods: {
+      inputChange(event) {
+          this.$emit("update:value", event.target.value)
+      },
     getClasses: (size, valid) => {
       let sizeValue, isValidValue;
 

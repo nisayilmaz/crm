@@ -24,17 +24,16 @@
                 <div class="card-body">
                   <form role="form" class="text-start">
                     <label>Email</label>
-                    <vsud-input type="email" placeholder="Email" name="email" />
+                    <vsud-input v-model:value="username" type="email" placeholder="Email" name="email" />
                     <label>Password</label>
-                    <vsud-input type="password" placeholder="Password" name="password" />
-                    <vsud-switch id="rememberMe" checked>Remember me</vsud-switch>
+                    <vsud-input v-model:value="password" type="password" placeholder="Password" name="password" />
                     <div class="text-center">
-                      <vsud-button
+                      <vsud-button @click="login"
                         class="my-4 mb-2"
                         variant="gradient"
                         color="info"
                         full-width
-                      >Sign in</vsud-button>
+                      >Sign in</vsud-button >
                     </div>
                   </form>
                 </div>
@@ -72,9 +71,9 @@
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
 import VsudInput from "@/components/VsudInput.vue";
-import VsudSwitch from "@/components/VsudSwitch.vue";
 import VsudButton from "@/components/VsudButton.vue";
 import bgImg from "@/assets/img/curved-images/curved9.jpg"
+import axios from "axios";
 const body = document.getElementsByTagName("body")[0];
 
 export default {
@@ -83,12 +82,13 @@ export default {
     Navbar,
     AppFooter,
     VsudInput,
-    VsudSwitch,
     VsudButton,
   },
   data() {
     return {
-      bgImg
+      bgImg,
+      username: "",
+      password :""
     }
   },
   beforeMount() {
@@ -105,5 +105,24 @@ export default {
     this.$store.state.showFooter = true;
     body.classList.add("bg-gray-100");
   },
+    methods: {
+        async login(e) {
+            e.preventDefault();
+            try {
+                const response = await axios.post(`http://${window.location.hostname}:5000/api/auth/login/`, {
+                    username:this.username,
+                    password:this.password,
+                });
+                if(response.data?.token) {
+                    window.localStorage.setItem("accessToken", `Token ${response.data.token}`);
+                    this.$router.push('/dashboard');
+
+                }
+            }
+            catch (error) {
+                alert("cannot be saved")
+            }
+        },
+    }
 };
 </script>

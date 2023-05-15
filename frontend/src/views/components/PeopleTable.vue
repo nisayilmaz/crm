@@ -133,31 +133,48 @@
       }
     },
     async created() {
-        const companiesRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/`);
+        const companiesRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/`,
+            {headers: {
+                    Authorization : `${localStorage.getItem("accessToken")}`
+                }});
         if (companiesRes.data.status === "success") {
             this.companies = companiesRes.data.data;
         }
-        const people = await axios.get(`http://${window.location.hostname}:5000/api/kisiler/`);
+        const people = await axios.get(`http://${window.location.hostname}:5000/api/kisiler/`, {
+            headers: {
+                Authorization : `${localStorage.getItem("accessToken")}`
+            }
+        });
         this.people = people.data.data;
     },
     methods: {
       async addPerson(e) {
         e.preventDefault();
-        const response = await axios.post(`http://${window.location.hostname}:5000/api/kisiler/`, {
-          first_name : this.first_name,
-          last_name : this.last_name,
-          phone : this.phone,
-          email : this.email,
-          company : this.company
-        },
-            {
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-        let lastId =  response.data.data.id;
-        const personRes = await axios.get(`http://${window.location.hostname}:5000/api/kisiler/${lastId}`);
-        this.people.push(personRes.data.data);
+        try {
+            const response = await axios.post(`http://${window.location.hostname}:5000/api/kisiler/`, {
+                    first_name : this.first_name,
+                    last_name : this.last_name,
+                    phone : this.phone,
+                    email : this.email,
+                    company : this.company
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization : `${localStorage.getItem("accessToken")}`
+                    }
+                });
+            let lastId =  response.data.data.id;
+            const personRes = await axios.get(`http://${window.location.hostname}:5000/api/kisiler/${lastId}`, {
+                headers: {
+                    Authorization : `${localStorage.getItem("accessToken")}`
+                }
+            });
+            this.people.push(personRes.data.data);
+        }
+        catch (err) {
+            alert(err)
+        }
         this.first_name = "";
         this.last_name = "";
         this.email = "";
@@ -166,7 +183,11 @@
       },
       async deletePerson(e, id) {
           e.preventDefault();
-          await axios.delete(`http://${window.location.hostname}:5000/api/kisiler/${id}`);
+          await axios.delete(`http://${window.location.hostname}:5000/api/kisiler/${id}`, {
+              headers: {
+                  Authorization : `${localStorage.getItem("accessToken")}`
+              }
+          });
           this.people = this.people.filter(person => person.id !== id);
       },
       getCompanyName(companyId) {

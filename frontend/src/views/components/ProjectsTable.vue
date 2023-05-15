@@ -41,7 +41,7 @@
                   </div>
                   <div class="mb-3">
                     <label for="count" class="form-label">Adet</label>
-                    <input v-model="count" @blur="v$.count.$touch" type="text" class="ps-0 form-control" id="count">
+                    <input v-model="count"  type="text" class="ps-0 form-control" id="count">
 <!--                      <span v-if="v$.count.$error">
                         {{ v$.count.$errors[0].$message }}
                       </span>-->
@@ -294,24 +294,44 @@ export default {
         }
     },*/
   async created() {
-    const clientsResp = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/client`);
+    const clientsResp = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/client`,{
+            headers: {
+                Authorization : `${localStorage.getItem("accessToken")}`
+            }
+      });
     if(clientsResp.data.data){
       this.clients = clientsResp.data.data;
     }
-    const partnersRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/partner`);
+    const partnersRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/partner`, {
+        headers: {
+            Authorization : `${localStorage.getItem("accessToken")}`
+        }
+    });
     if(partnersRes.data.data){
       this.partners = partnersRes.data.data;
     }
 
-    const productRes = await axios.get(`http://${window.location.hostname}:5000/api/urunler`);
+    const productRes = await axios.get(`http://${window.location.hostname}:5000/api/urunler`, {
+        headers: {
+            Authorization : `${localStorage.getItem("accessToken")}`
+        }
+    });
         this.products = productRes.data?.data;
 
-    const projectsRes = await axios.get(`http://${window.location.hostname}:5000/api/firsatlar`);
+    const projectsRes = await axios.get(`http://${window.location.hostname}:5000/api/firsatlar`, {
+        headers: {
+            Authorization : `${localStorage.getItem("accessToken")}`
+        }
+    });
     if(projectsRes) {
       this.projects = projectsRes.data.data;
       this.formatObj(this.projects);
     }
-    const peopleResp =  await axios.get(`http://${window.location.hostname}:5000/api/kisiler`);
+    const peopleResp =  await axios.get(`http://${window.location.hostname}:5000/api/kisiler`, {
+        headers: {
+            Authorization : `${localStorage.getItem("accessToken")}`
+        }
+    });
     this.people = peopleResp.data.data
   },
   computed: {
@@ -337,27 +357,40 @@ export default {
    methods: {
     async addProject(e) {
       e.preventDefault();
-      const response = await axios.post(`http://${window.location.hostname}:5000/api/firsatlar`, {
-          client: this.client,
-          partner: this.partner,
-          registration_date: this.startDate,
-          product: this.product,
-          poc_request: this.poc,
-          exp_end_date: this.endDate,
-          client_contact: this.clientContact,
-          partner_contact: this.partnerContact,
-          tender_date: this.tenderDate,
-          info: this.explanation,
-          status: this.status,
-          probability: this.probability,
-          count: this.count,
-          budget: this.budget
-      });
-      let lastId = response.data.data.id;
-      const projectsRes = await axios.get(`http://${window.location.hostname}:5000/api/firsatlar/${lastId}`);
-      this.formatObj(projectsRes.data.data)
-      console.log(projectsRes.data.data)
-      this.projects.push(projectsRes.data.data);
+      try {
+          const response = await axios.post(`http://${window.location.hostname}:5000/api/firsatlar`, {
+              client: this.client,
+              partner: this.partner,
+              registration_date: this.startDate,
+              product: this.product,
+              poc_request: this.poc,
+              exp_end_date: this.endDate,
+              client_contact: this.clientContact,
+              partner_contact: this.partnerContact,
+              tender_date: this.tenderDate,
+              info: this.explanation,
+              status: this.status,
+              probability: this.probability,
+              count: this.count,
+              budget: this.budget
+          }, {
+              headers: {
+                  Authorization : `${localStorage.getItem("accessToken")}`
+              }
+          });
+          let lastId = response.data.data.id;
+          const projectsRes = await axios.get(`http://${window.location.hostname}:5000/api/firsatlar/${lastId}`, {
+              headers: {
+                  Authorization : `${localStorage.getItem("accessToken")}`
+              }
+          });
+          this.formatObj(projectsRes.data.data)
+          this.projects.push(projectsRes.data.data);
+      }
+      catch (err) {
+          alert(err)
+      }
+
       this.client = "";
       this.partner = "";
     },
@@ -401,7 +434,11 @@ export default {
     },
      async deleteProject(e, id) {
          e.preventDefault();
-         await axios.delete(`http://${window.location.hostname}:5000/api/firsatlar/${id}`);
+         await axios.delete(`http://${window.location.hostname}:5000/api/firsatlar/${id}`, {
+             headers: {
+                 Authorization : `${localStorage.getItem("accessToken")}`
+             }
+         });
          this.projects = this.projects.filter(project => project.id !== id);
      },
   },

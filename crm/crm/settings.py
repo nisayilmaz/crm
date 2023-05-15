@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'knox',
     'relations',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -71,7 +73,11 @@ TEMPLATES = [
         },
     },
 ]
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'knox.auth.TokenAuthentication',
+    ]
+}
 WSGI_APPLICATION = 'crm.wsgi.application'
 
 
@@ -126,3 +132,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5050",
 ]
+
+#AUTH_USER_MODEL = 'accounts.CustomUser'
+
+
+

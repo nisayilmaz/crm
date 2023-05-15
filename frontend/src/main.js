@@ -18,7 +18,25 @@ import router from "./router";
 import "./assets/css/nucleo-icons.css";
 import "./assets/css/nucleo-svg.css";
 import SoftUIDashboard from "./soft-ui-dashboard";
+import axios from "axios";
 
+router.beforeEach(async (to, from, next) => {
+    var isAuthenticated = true // check if user is authenticated
+    try{
+        const response = await axios.get(`http://${window.location.hostname}:5000/api/auth/check/`, {headers: {
+                Authorization : `${localStorage.getItem("accessToken")}`
+            }});
+    }
+    catch(err){
+        isAuthenticated = false
+    }
+
+    if (to.meta.requiresAuth && !isAuthenticated) {
+        next('/sign-in')
+    } else {
+        next()
+    }
+})
     const renderApp = () => {
         createApp(App)
         .use(store)
