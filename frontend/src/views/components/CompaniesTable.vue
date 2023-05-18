@@ -152,6 +152,10 @@ export default {
               Authorization : `${localStorage.getItem("accessToken")}`
           }});
           this.companies.push(response.data.data)
+          this.name = ""
+          this.phone = ""
+          this.email= ""
+          this.address= ""
       }
       catch (error) {
 

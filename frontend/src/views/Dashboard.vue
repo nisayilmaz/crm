@@ -1,17 +1,34 @@
 <template>
   <div class="py-4 container-fluid">
     <div class="row">
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
+            <card
+                    :title="'Fırsat Sayısı'"
+                    :value="projectCount"
+                    :icon-class="'fas fa-tasks'"
+                    :icon-background="'bg-gradient-success'"
+                    direction-reverse
+            ></card>
+        </div>
+        <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
+            <card
+                    :title="'Kurum Sayısı'"
+                    :value="projectCount"
+                    :icon-class="'far fa-building'"
+                    :icon-background="'bg-gradient-success'"
+                    direction-reverse
+            ></card>
+        </div>
+      <div class="col-xl-2 col-sm-6 mb-xl-0 mb-4">
         <card
-          :title="stats.money.title"
-          :value="stats.money.value"
-          :percentage="stats.money.percentage"
-          :icon-class="stats.money.iconClass"
-          :icon-background="stats.iconBackground"
+          :title="'İş Ortağı Sayısı'"
+          :value="projectCount"
+          :icon-class="'far fa-building'"
+          :icon-background="'bg-gradient-success'"
           direction-reverse
         ></card>
       </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+<!--      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
         <card
           :title="stats.users.title"
           :value="stats.users.value"
@@ -31,17 +48,7 @@
           :percentage-color="stats.clients.percentageColor"
           direction-reverse
         ></card>
-      </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0">
-        <card
-          :title="stats.sales.title"
-          :value="stats.sales.value"
-          :percentage="stats.sales.percentage"
-          :icon-class="stats.sales.iconClass"
-          :icon-background="stats.iconBackground"
-          direction-reverse
-        ></card>
-      </div>
+      </div>-->
     </div>
     <div class="row">
       <div class="col-lg-7 mb-lg-0 mb-4">
@@ -160,6 +167,7 @@ import US from "../assets/img/icons/flags/US.png";
 import DE from "../assets/img/icons/flags/DE.png";
 import GB from "../assets/img/icons/flags/GB.png";
 import BR from "../assets/img/icons/flags/BR.png";
+import axios from "axios";
 
 export default {
   name: "DashboardDefault",
@@ -172,65 +180,25 @@ export default {
   },
   data() {
     return {
-      stats: {
-        iconBackground: "bg-gradient-success",
-        money: {
-          title: "Today's Money",
-          value: "$53,000",
-          percentage: "+55%",
-          iconClass: "ni ni-money-coins",
-        },
-        users: {
-          title: "Today's Users",
-          value: "2,300",
-          percentage: "+3%",
-          iconClass: "ni ni-world",
-        },
-        clients: {
-          title: "New Clients",
-          value: "+3,462",
-          percentage: "-2%",
-          iconClass: "ni ni-paper-diploma",
-          percentageColor: "text-danger",
-        },
-        sales: {
-          title: "Sales",
-          value: "$103,430",
-          percentage: "+5%",
-          iconClass: "ni ni-cart",
-        },
-      },
-      sales: {
-        us: {
-          country: "United States",
-          sales: 2500,
-          value: "$230,900",
-          bounce: "29.9%",
-          flag: US,
-        },
-        germany: {
-          country: "Germany",
-          sales: "3.900",
-          value: "$440,000",
-          bounce: "40.22%",
-          flag: DE,
-        },
-        britain: {
-          country: "Great Britain",
-          sales: "1.400",
-          value: "$190,700",
-          bounce: "23.44%",
-          flag: GB,
-        },
-        brasil: {
-          country: "Brasil",
-          sales: "562",
-          value: "$143,960",
-          bounce: "32.14%",
-          flag: BR,
-        },
-      },
+        projects : []
     };
   },
+    computed: {
+        projectCount() {
+            if (!Array.isArray(this.projects)) return 0
+            return this.projects.length.toString()
+        },
+    },
+    async created() {
+        const projectsRes = await axios.get(`http://${window.location.hostname}:5000/api/firsatlar`, {
+            headers: {
+                Authorization : `${localStorage.getItem("accessToken")}`
+            }
+        });
+        if(projectsRes) {
+            this.projects = projectsRes.data.data;
+            this.formatObj(this.projects);
+        }
+    }
 };
 </script>

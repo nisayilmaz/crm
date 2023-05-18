@@ -42,9 +42,6 @@
                   <div class="mb-3">
                     <label for="count" class="form-label">Adet</label>
                     <input v-model="count"  type="text" class="ps-0 form-control" id="count">
-<!--                      <span v-if="v$.count.$error">
-                        {{ v$.count.$errors[0].$message }}
-                      </span>-->
                   </div>
                 </div>
                 <div class="col-4">
@@ -224,7 +221,14 @@
               </td>
 
               <td class="align-middle text-center">
-                <span class="text-xs font-weight-bold">{{ project?.info }}</span>
+                <span class="text-xs font-weight-bold">
+                    <Popper :hover="true">
+                      <i class="far fa-question-circle"></i>
+                      <template #content>
+                        <div>{{ project?.info }}</div>
+                      </template>
+                    </Popper>
+                    </span>
               </td>
 
               <td class="align-middle text-center">
@@ -246,7 +250,24 @@
     </div>
   </div>
 </template>
+<style>
+.popper{
+    max-width: 300px;
+    white-space: break-spaces;
 
+}
+:root {
+    --popper-theme-background-color: #333333;
+    --popper-theme-background-color-hover: #333333;
+    --popper-theme-text-color: #ffffff;
+    --popper-theme-border-width: 0px;
+    --popper-theme-border-style: solid;
+    --popper-theme-border-radius: 6px;
+    --popper-theme-padding: 32px;
+    --popper-theme-box-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
+}
+
+</style>
 <script>
 import axios from "axios";
 import moment from "moment";
@@ -284,15 +305,6 @@ export default {
       budget: "",
     }
   },
-    /*validations () {
-        return {
-            count: {
-                required: helpers.withMessage('This field is required', required),
-                minLength: minLength(4),
-            },
-            status: { required },
-        }
-    },*/
   async created() {
     const clientsResp = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/client`,{
             headers: {

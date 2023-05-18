@@ -6,7 +6,7 @@ from rest_framework import permissions
 from .models import Company, People, Project
 from .serializers import *
 from knox.auth import TokenAuthentication as KnoxTokenAuthentication
-
+from knox.models import AuthToken
 
 class CompanyApiView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
@@ -114,12 +114,28 @@ class ProjectApiView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
     def get(self, request, *args, **kwargs):
-        projects = Project.objects.all()
+        token = request.META.get('HTTP_AUTHORIZATION', None)
+        user = None
+        if token:
+            token = token.split(" ")[1]
+            user = AuthToken.objects.get(token_key=token[0:8]).user
+        role = None
+        if user:
+            role = user.role
+
+        if role == 1:
+            projects = Project.objects.all()
+        elif role == 2:
+            projects = Project.objects.filter(registered_by=user)
         serializer = ProjectSerializer(projects, many=True)
         return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
+        token = request.META.get('HTTP_AUTHORIZATION', None)
+        user = None
+        if token:
+            token = token.split(" ")[1]
+            user = AuthToken.objects.get(token_key=token[0:8]).user
         data = {
             'client': request.data.get('client'),
             'partner': request.data.get('partner'),
@@ -135,6 +151,7 @@ class ProjectApiView(APIView):
             'budget': request.data.get('budget'),
             'poc_request': request.data.get('poc_request'),
             'probability': request.data.get('probability'),
+            'registered_by': user.id
         }
         serializer = ProjectSerializer(data=data)
         if serializer.is_valid():

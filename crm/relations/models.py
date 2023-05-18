@@ -1,6 +1,8 @@
 from django.db import models
 
 # Create your models here.
+from accounts.models import CustomUser
+
 ROLES = (
     ('client', 'Son Kullanıcı'),
     ('partner', 'İş Ortağı'),
@@ -47,6 +49,7 @@ class Project(models.Model):
     budget = models.FloatField()
     poc_request = models.CharField(max_length=1, choices=POC_REQUEST)
     probability = models.CharField(max_length=3)
+    registered_by = models.ForeignKey(to=CustomUser, on_delete=models.PROTECT)
 
 
 

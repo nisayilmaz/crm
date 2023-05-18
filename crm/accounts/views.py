@@ -1,7 +1,8 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 
 from django.contrib.auth import login
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
 from knox.views import LogoutView
@@ -10,7 +11,7 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from knox.models import AuthToken
 from rest_framework.views import APIView
-
+from .models import CustomUser
 from .serializers import UserSerializer, RegisterSerializer
 
 
@@ -53,3 +54,32 @@ class CheckAuthentication(APIView):
             LogoutView.as_view()(request._request)
             return Response({'detail': 'Invalid token. Please log in again.'}, status=401)
 
+class UsersApiView(APIView):
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request):
+        try:
+            users = CustomUser.objects.all()
+            serializer = UserSerializer(users, many=True)
+            return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'status': 'failed', 'data': []}, status=status.HTTP_204_NO_CONTENT)
+
+class UserApiDetailView(APIView):
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request, pk):
+        try:
+            user = CustomUser.objects.get(pk=pk)
+            serializer = UserSerializer(user, many=False)
+            return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'status': 'failed', 'data': []}, status=status.HTTP_204_NO_CONTENT)
+
+    def delete(self, request, pk):
+        try:
+            user = CustomUser.objects.get(pk=pk)
+            user.delete()
+            return Response({'status': 'success', 'data': []}, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'status': 'failed', 'data': []}, status=status.HTTP_204_NO_CONTENT)

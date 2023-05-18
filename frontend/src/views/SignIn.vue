@@ -18,33 +18,24 @@
             <div class="mx-auto col-xl-4 col-lg-5 col-md-6 d-flex flex-column">
               <div class="mt-8 card card-plain">
                 <div class="pb-0 card-header text-start">
-                  <h3 class="font-weight-bolder text-info text-gradient">Welcome back</h3>
-                  <p class="mb-0">Enter your email and password to sign in</p>
+                  <h3 class="font-weight-bolder text-info text-gradient">Hoş Geldiniz</h3>
+                  <p class="mb-0">Email ve şifre ile giriş yapınız.</p>
                 </div>
                 <div class="card-body">
                   <form role="form" class="text-start">
                     <label>Email</label>
                     <vsud-input v-model:value="username" type="email" placeholder="Email" name="email" />
-                    <label>Password</label>
-                    <vsud-input v-model:value="password" type="password" placeholder="Password" name="password" />
+                    <label>Şifre</label>
+                    <vsud-input v-model:value="password" type="password" placeholder="Şifre" name="password" />
                     <div class="text-center">
                       <vsud-button @click="login"
                         class="my-4 mb-2"
                         variant="gradient"
                         color="info"
                         full-width
-                      >Sign in</vsud-button >
+                      >GİRİŞ YAP</vsud-button >
                     </div>
                   </form>
-                </div>
-                <div class="px-1 pt-0 text-center card-footer px-lg-2">
-                  <p class="mx-auto mb-4 text-sm">
-                    Don't have an account?
-                    <a
-                      href="javascript:;"
-                      class="text-info text-gradient font-weight-bold"
-                    >Sign up</a>
-                  </p>
                 </div>
               </div>
             </div>
@@ -64,7 +55,6 @@
       </div>
     </section>
   </main>
-  <app-footer />
 </template>
 
 <script>

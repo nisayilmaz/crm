@@ -7,5 +7,7 @@ urlpatterns = [
     path('login/', LoginAPI.as_view(), name='login'),
     path('check/', CheckAuthentication.as_view(), name='check_auth'),
     path('logout/', knox_views.LogoutView.as_view(), name='logout'),
+    path('kullanicilar/', UsersApiView.as_view(), name='users'),
+    path('kullanicilar/<int:pk>/', UserApiDetailView.as_view()),
 
 ]
