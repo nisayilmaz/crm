@@ -2,8 +2,7 @@
   <div class="progress">
     <div
       class="progress-bar"
-      :class="getClasses(color, variant)"
-      :style="{ width: percentage + '%' }"
+      :style="{ width: percentage + '%', backgroundColor: getColor(percentage) + ' !important' }"
     ></div>
   </div>
 </template>
@@ -12,27 +11,29 @@
 export default {
   name: "VsudProgress",
   props: {
-    color: {
-      type: String,
-      default: "primary",
-    },
-    variant: {
-      type: String,
-      default: "fill",
-    },
     percentage: {
       type: String,
       default: ""
     },
   },
   methods: {
-    getClasses: (color, variant) => {
+    getColor: (percentage) => {
       let colorValue;
 
-      if (variant === "gradient") {
-        colorValue = `bg-gradient-${color}`;
-      } else {
-        colorValue = `bg-${color}`;
+      if (percentage <= 15) {
+        colorValue = "#cc3300";
+      }
+      else if (percentage > 15 && percentage <= 25) {
+          colorValue = "#ff6700";
+      }
+      else if (percentage > 25 && percentage <= 50) {
+          colorValue = "#ffcc00";
+      }
+      else if (percentage > 50 && percentage <= 75) {
+          colorValue = "#99cc33";
+      }
+      else{
+          colorValue = "#339900";
       }
 
       return `${colorValue}`;

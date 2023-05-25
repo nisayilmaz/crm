@@ -31,6 +31,7 @@ class RegisterAPI(generics.GenericAPIView):
 
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
+
     def post(self, request, format=None):
         print(KnoxTokenAuthentication())
 
@@ -44,6 +45,7 @@ class LoginAPI(KnoxLoginView):
 class CheckAuthentication(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request):
         try:
             user = request.user
@@ -54,9 +56,11 @@ class CheckAuthentication(APIView):
             LogoutView.as_view()(request._request)
             return Response({'detail': 'Invalid token. Please log in again.'}, status=401)
 
+
 class UsersApiView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request):
         try:
             users = CustomUser.objects.all()
@@ -65,9 +69,11 @@ class UsersApiView(APIView):
         except ObjectDoesNotExist:
             return Response({'status': 'failed', 'data': []}, status=status.HTTP_204_NO_CONTENT)
 
+
 class UserApiDetailView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request, pk):
         try:
             user = CustomUser.objects.get(pk=pk)

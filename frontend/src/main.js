@@ -22,6 +22,7 @@ import axios from "axios";
 import Popper from "vue3-popper";
 
 
+
 router.beforeEach(async (to, from, next) => {
     var isAuthenticated = true // check if user is authenticated
     try{

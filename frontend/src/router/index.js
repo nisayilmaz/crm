@@ -6,6 +6,7 @@ import Companies from "@/views/Companies.vue";
 import Partners from "@/views/Partners.vue";
 import People from "@/views/People.vue";
 import Users from "@/views/Users.vue";
+import Profile from "@/views/Profile.vue";
 
 const routes = [
   {
@@ -65,6 +66,13 @@ const routes = [
     path: "/sign-in",
     name: "Sign In",
     component: SignIn,
+  },
+  {
+    path: "/in/:id",
+    name: "bill",
+    component: Profile,
+    props: true
+
   },
 ];
 

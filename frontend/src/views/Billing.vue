@@ -8,29 +8,7 @@
     <div class="row">
       <div class="col-lg-8">
         <div class="row mt-4">
-          <div class="col-xl-6 mb-xl-0 mb-4">
-            <master-card />
-          </div>
-          <div class="col-xl-6">
-            <div class="row">
-              <div class="col-md-6">
-                <default-info-card
-                  :class-icon="salary.classIcon"
-                  :title="salary.title"
-                  :desc="salary.desc"
-                  :price="salary.price"
-                />
-              </div>
-              <div class="col-md-6">
-                <default-info-card
-                  :class-icon="paypal.classIcon"
-                  :title="paypal.title"
-                  :desc="paypal.desc"
-                  :price="paypal.price"
-                />
-              </div>
-            </div>
-          </div>
+
           <div class="col-md-12 mb-4">
             <payment-card />
           </div>

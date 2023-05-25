@@ -197,7 +197,6 @@ export default {
         });
         if(projectsRes) {
             this.projects = projectsRes.data.data;
-            this.formatObj(this.projects);
         }
     }
 };

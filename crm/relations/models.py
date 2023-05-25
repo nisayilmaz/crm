@@ -9,8 +9,14 @@ ROLES = (
 )
 
 POC_REQUEST = (
-    ('Y', 'Evet'),
-    ('N', 'Hayır'),
+    (1, 'Toplantı Aşaması'),
+    (2, 'POC Talebi'),
+    (3, 'POC Aşaması'),
+    (4, 'POC Gerçekleştirildi'),
+    (5, 'Yaklaşık Maliyet'),
+    (6, 'Alım Aşaması'),
+    (7, 'Pazarlık Aşaması'),
+    (8, 'Tamamlandı'),
 )
 
 
@@ -36,15 +42,14 @@ class Product(models.Model):
 
 class Project(models.Model):
     client = models.ForeignKey(to=Company, related_name="client", on_delete=models.CASCADE)
-    partner = models.ForeignKey(to=Company,related_name="partner", on_delete=models.CASCADE)
+    partner = models.ForeignKey(to=Company, related_name="partner", on_delete=models.CASCADE)
     registration_date = models.DateField(auto_now=True)
     exp_end_date = models.DateField()
     tender_date = models.DateField()
     info = models.TextField()
-    status = models.CharField(max_length=10)
     count = models.IntegerField()
-    client_contact = models.ForeignKey(to=People,related_name="client_contact", on_delete=models.CASCADE)
-    partner_contact = models.ForeignKey(to=People,related_name="partner_contact", on_delete=models.CASCADE)
+    client_contact = models.ForeignKey(to=People, related_name="client_contact", on_delete=models.CASCADE)
+    partner_contact = models.ForeignKey(to=People, related_name="partner_contact", on_delete=models.CASCADE)
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
     budget = models.FloatField()
     poc_request = models.CharField(max_length=1, choices=POC_REQUEST)
@@ -52,4 +57,8 @@ class Project(models.Model):
     registered_by = models.ForeignKey(to=CustomUser, on_delete=models.PROTECT)
 
 
-
+class Notes(models.Model):
+    title = models.CharField(max_length=255)
+    note = models.TextField()
+    creation_date = models.DateTimeField(auto_now=True)
+    project = models.ForeignKey(to=Project, on_delete=models.CASCADE)

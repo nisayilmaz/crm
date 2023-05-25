@@ -1,70 +1,322 @@
 <template>
-  <div class="card h-100">
-    <div class="p-3 pb-0 card-header">
-      <div class="row">
-        <div class="col-md-8 d-flex align-items-center">
-          <h6 class="mb-0">Profile Information</h6>
+    <div class="card h-100">
+        <div class="p-3 pb-0 card-header">
+            <div class="row">
+                <div class="col-md-8 d-flex align-items-center">
+                    <h6 class="mb-0">Fırsat Detayı</h6>
+                </div>
+                <div class="col-md-4 text-end">
+                    <a v-if="!edit" href="javascript:;">
+                        <i @click="this.clickEdit"
+                           class="text-sm fa fa-pencil-square-o text-secondary"
+                        ></i>
+                    </a>
+                    <a v-if="edit" href="javascript:;">
+                        <i @click="this.cancelEdit"
+                           class="text-sm fa fa-ban text-secondary"
+                        ></i>
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 text-end">
-          <a href="javascript:;">
-            <i
-              class="text-sm fas fa-user-edit text-secondary"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              title="Edit Profile"
-            ></i>
-          </a>
+        <div v-if="!edit" class="p-3 card-body">
+            <p class="text-sm">
+                <strong class="text-dark">Açıklama:</strong>&nbsp;{{ project?.info }}
+            </p>
+            <ul class="list-group">
+                <li class="pt-0 text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">Son Kullanıcı:</strong>&nbsp;{{ projectDetails.client?.name }}
+                </li>
+                <li class="text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">İş Ortağı:</strong>&nbsp;{{ projectDetails.partner?.name }}
+                </li>
+                <li class="text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">Account Manager:</strong>&nbsp;{{ projectDetails.user?.first_name }}
+                    {{ projectDetails.user?.last_name }}
+                </li>
+                <li class="text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">Fırsat Eklenme
+                        Tarihi:</strong>&nbsp;{{ formatDate(project?.registration_date) }}
+                </li>
+                <li class="text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">İhale Tarihi:</strong>&nbsp;{{ formatDate(project?.tender_date) }}
+                </li>
+                <li class="text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">Tahmini Kapanış
+                        Tarihi:</strong>&nbsp;{{ formatDate(project?.exp_end_date) }}
+                </li>
+                <li class="text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">Son Kullanıcı İlgili
+                        Kişi:</strong>&nbsp;{{ projectDetails.client_contact?.first_name }}
+                    {{ projectDetails.client_contact?.last_name }}
+                </li>
+                <li class="text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">İş Ortağı İlgili
+                        Kişi:</strong>&nbsp;{{ projectDetails.partner_contact?.first_name }}
+                    {{ projectDetails.partner_contact?.last_name }}
+                </li>
+                <li class="text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">Ürün:</strong>&nbsp;{{ projectDetails.product?.name }}
+                </li>
+                <li class="text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">Adet:</strong>&nbsp;{{ project?.count }}
+                </li>
+                <li class="text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">Bütçe:</strong>&nbsp;{{ project?.budget }}$
+                </li>
+                <li class="text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">POC :</strong>&nbsp;{{ formatPoc(project?.poc_request) }}
+                </li>
+                <li class="text-sm border-0 list-group-item ps-0">
+                    <strong class="text-dark">Olasılık:</strong>&nbsp;{{ project?.probability }}%
+                </li>
+            </ul>
         </div>
-      </div>
+        <div v-if="edit" class="p-3 card-body">
+            <form class="row">
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="client" class="form-label">Son Kullanıcı</label>
+                        <select v-model="client" class="form-select" id="client" @change="dropdownListener">
+                            <option selected>Kurum Seçin</option>
+                            <option v-for="client in clients" :id="client.id" :value="client.id">{{ client.name }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="partner" class="form-label">İş Ortağı</label>
+                        <select v-model="partner" class="form-select" id="partner" @change="dropdownListener">
+                            <option selected>Kurum Seçin</option>
+                            <option v-for="partner in partners" :id="partner.id" :value="partner.id">{{ partner.name }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label">Fırsat Tarihi</label>
+                        <input v-model="startDate" type="date" class="ps-0 form-control" id="startDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="product" class="form-label">Ürün</label>
+                        <select v-model="product" class="form-select" id="product">
+                            <option selected>Ürün Seçin</option>
+                            <option v-for="product in products" :key="product.id" :value="product.id"> {{product.name}} </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="count" class="form-label">Adet</label>
+                        <input v-model="count"  type="text" class="ps-0 form-control" id="count">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="client_contact" class="form-label">İlgili Kişi</label>
+                        <select v-model="clientContact" class="form-select" id="client_contact">
+                            <option selected></option>
+                            <option v-for="emp in clientEmployees" :id="emp.id" :value="emp.id"> {{ emp.first_name }} {{ emp.last_name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="partner_contact" class="form-label">Proje Sorumlusu</label>
+                        <select v-model="partnerContact" class="form-select" id="partner_contact">
+                            <option selected></option>
+                            <option v-for="emp in partnerEmployees" :id="emp.id" :value="emp.id"> {{ emp.first_name }} {{ emp.last_name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="poc" class="form-label">POC</label>
+                        <select v-model="poc" class="form-select" id="poc">
+                            <option selected></option>
+                            <option value="1"> Toplantı Aşaması </option>
+                            <option value="2"> POC Talebi </option>
+                            <option value="3"> POC Aşaması </option>
+                            <option value="4"> POC Gerçekleştirildi </option>
+                            <option value="5"> Yaklaşık Maliyet </option>
+                            <option value="6"> Alım Aşaması </option>
+                            <option value="7"> Pazarlık Aşaması </option>
+                            <option value="8"> Tamamlandı </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="endDate" class="form-label">Tahmini Kapanış Tarihi</label>
+                        <input v-model="endDate" type="date" class="ps-0 form-control" id="endDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="probability" class="form-label">Olasılık</label>
+                        <vue-slider id="probability"
+                                    v-model="probability"
+                                    :data="probValues"
+                                    :marks="false"
+                        ></vue-slider>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="tenderDate" class="form-label">İhale Tarihi</label>
+                        <input v-model="tenderDate" type="date" class="ps-0 form-control" id="tenderDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="budget" class="form-label">Bütçe</label>
+                        <input v-model="budget" type="text" class="ps-0 form-control" id="budget">
+                    </div>
+                    <div class="mb-3">
+                        <label for="explanation" class="form-label">Açıklama</label>
+                        <input v-model="explanation" type="text" class="ps-0 form-control" id="explanation">
+                    </div>
+                </div>
+            </form>
+            <button @click="addProject" type="submit" class="btn btn-primary">Ekle</button>
+        </div>
     </div>
-    <div class="p-3 card-body">
-      <p class="text-sm">
-        Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no.
-        If two equally difficult paths, choose the one more painful in the short
-        term (pain avoidance is creating an illusion of equality).
-      </p>
-      <hr class="my-4 horizontal gray-light" />
-      <ul class="list-group">
-        <li class="pt-0 text-sm border-0 list-group-item ps-0">
-          <strong class="text-dark">Full Name:</strong> &nbsp; Alec M. Thompson
-        </li>
-        <li class="text-sm border-0 list-group-item ps-0">
-          <strong class="text-dark">Mobile:</strong> &nbsp; (44) 123 1234 123
-        </li>
-        <li class="text-sm border-0 list-group-item ps-0">
-          <strong class="text-dark">Email:</strong> &nbsp; alecthompson@mail.com
-        </li>
-        <li class="text-sm border-0 list-group-item ps-0">
-          <strong class="text-dark">Location:</strong> &nbsp; USA
-        </li>
-        <li class="pb-0 border-0 list-group-item ps-0">
-          <strong class="text-sm text-dark">Social:</strong> &nbsp;
-          <a
-            class="py-0 mb-0 btn btn-facebook btn-simple ps-1 pe-2"
-            href="javascript:;"
-          >
-            <i class="fab fa-facebook fa-lg"></i>
-          </a>
-          <a
-            class="py-0 mb-0 btn btn-twitter btn-simple ps-1 pe-2"
-            href="javascript:;"
-          >
-            <i class="fab fa-twitter fa-lg"></i>
-          </a>
-          <a
-            class="py-0 mb-0 btn btn-instagram btn-simple ps-1 pe-2"
-            href="javascript:;"
-          >
-            <i class="fab fa-instagram fa-lg"></i>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
 </template>
 
 <script>
+import axios from "axios";
+import users from "@/views/Users.vue";
+import moment from "moment/moment";
+import VueSlider from "vue-slider-component";
+import 'vue-slider-component/theme/default.css';
+
 export default {
-  name: "ProfileCard",
+    name: "ProfileCard",
+    components: {
+        VueSlider
+    },
+    props: {
+        project: {
+            type: Object,
+            default: null
+        }
+    },
+    data() {
+        return {
+            clients: [],
+            partners: [],
+            products: [],
+            people: [],
+            users: [],
+            client: "",
+            partner: "",
+            startDate: "",
+            product: "",
+            poc: "",
+            endDate: "",
+            clientContact: "",
+            partnerContact: "",
+            tenderDate: "",
+            explanation: "",
+            probability: 0,
+            count: "",
+            budget: "",
+            probValues: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+            user: "",
+            edit: false
+        }
+    },
+    async created() {
+        const clientsResp = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/client`, {
+            headers: {
+                Authorization: `${localStorage.getItem("accessToken")}`
+            }
+        });
+        if (clientsResp.data.data) {
+            this.clients = clientsResp.data.data;
+        }
+        const partnersRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/partner`, {
+            headers: {
+                Authorization: `${localStorage.getItem("accessToken")}`
+            }
+        });
+        if (partnersRes.data.data) {
+            this.partners = partnersRes.data.data;
+        }
+
+        const productRes = await axios.get(`http://${window.location.hostname}:5000/api/urunler`, {
+            headers: {
+                Authorization: `${localStorage.getItem("accessToken")}`
+            }
+        });
+        this.products = productRes.data?.data;
+
+        const peopleResp = await axios.get(`http://${window.location.hostname}:5000/api/kisiler`, {
+            headers: {
+                Authorization: `${localStorage.getItem("accessToken")}`
+            }
+        });
+        this.people = peopleResp.data.data
+
+        const usersRes = await axios.get(`http://${window.location.hostname}:5000/api/auth/kullanicilar`, {
+            headers: {
+                Authorization: `${localStorage.getItem("accessToken")}`
+            }
+        });
+        if (usersRes.data.data) {
+            this.users = usersRes.data.data;
+        }
+    },
+    computed: {
+        projectDetails() {
+            //var edited = this.editId === project.id
+            const client = this.clients.find(c => c.id === this.project?.client);
+            const partner = this.partners.find(c => c.id === this.project?.partner);
+            const client_contact = this.people.find(person => person.id === this.project?.client_contact);
+            const partner_contact = this.people.find(person => person.id === this.project?.partner_contact);
+            const product = this.products.find(prod => prod.id === this.project?.product);
+            const user = this.users.find(usr => usr.id === this.project?.registered_by);
+            return {client, partner, client_contact, partner_contact, product, user};
+        }
+    },
+    methods: {
+        formatDate(dateInput, format = 'DD.MM.YYYY') {
+            return moment(dateInput).format(format)
+        },
+        formatPoc(poc) {
+            let options = {
+                1: "Toplantı Aşaması",
+                2: "POC Talebi",
+                3: "POC Aşaması",
+                4: "POC Gerçekleştirildi",
+                5: "Yaklaşık Maliyet",
+                6: "Alım Aşaması",
+                7: "Pazarlık Aşaması",
+                8: "Tamamlandı",
+            }
+            return options[poc]
+        },
+        clickEdit() {
+            this.edit = true
+            this.client = this.project?.client
+            this.partner = this.project?.partner
+            this.tenderDate = this.project?.tender_date
+            this.startDate = this.project?.registration_date
+            this.product = this.project?.product
+            this.poc = this.project?.poc_request
+            this.endDate = this.project?.exp_end_date
+            this.explanation = this.project?.info
+            this.probability =  this.project?.probability
+            this.clientContact =  this.project?.client_contact
+            this.partnerContact = this.project?.partner_contact
+            this.count = this.project?.count
+            this.budget = this.project?.budget
+            this.user = this.project?.registered_by
+        },
+        cancelEdit() {
+            this.edit = false
+            this.client = ""
+            this.partner = ""
+            this.tenderDate = ""
+            this.startDate = ""
+            this.product = ""
+            this.poc = ""
+            this.endDate = ""
+            this.explanation = ""
+            this.probability =  ""
+            this.clientContact =  ""
+            this.partnerContact = ""
+            this.count = ""
+            this.budget = ""
+            this.user = ""
+        }
+    }
 };
 </script>

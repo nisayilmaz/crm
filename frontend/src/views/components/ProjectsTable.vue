@@ -62,45 +62,45 @@
                       </option>
                     </select>
                   </div>
-
                   <div class="mb-3">
                     <label for="poc" class="form-label">POC</label>
                     <select v-model="poc" class="form-select" id="poc">
                       <option selected></option>
-                      <option value="Y"> Evet </option>
-                      <option value="N"> Hayır </option>
+                      <option value="1"> Toplantı Aşaması </option>
+                      <option value="2"> POC Talebi </option>
+                      <option value="3"> POC Aşaması </option>
+                      <option value="4"> POC Gerçekleştirildi </option>
+                      <option value="5"> Yaklaşık Maliyet </option>
+                      <option value="6"> Alım Aşaması </option>
+                      <option value="7"> Pazarlık Aşaması </option>
+                      <option value="8"> Tamamlandı </option>
                     </select>
                   </div>
-
                   <div class="mb-3">
                     <label for="endDate" class="form-label">Tahmini Kapanış Tarihi</label>
                     <input v-model="endDate" type="date" class="ps-0 form-control" id="endDate">
                   </div>
-
-                  <div class="mb-3">
-                    <label for="budget" class="form-label">Bütçe</label>
-                    <input v-model="budget" type="text" class="ps-0 form-control" id="budget">
-                  </div>
+                    <div class="mb-3">
+                        <label for="probability" class="form-label">Olasılık</label>
+                        <vue-slider id="probability"
+                                    v-model="probability"
+                                    :data="probValues"
+                                    :marks="false"
+                        ></vue-slider>
+                    </div>
                 </div>
                 <div class="col-4">
                   <div class="mb-3">
                     <label for="tenderDate" class="form-label">İhale Tarihi</label>
                     <input v-model="tenderDate" type="date" class="ps-0 form-control" id="tenderDate">
                   </div>
-
                   <div class="mb-3">
-                    <label for="probability" class="form-label">Olasılık</label>
-                    <input v-model="probability" type="text" class="ps-0 form-control" id="probability">
+                      <label for="budget" class="form-label">Bütçe</label>
+                      <input v-model="budget" type="text" class="ps-0 form-control" id="budget">
                   </div>
-
                   <div class="mb-3">
                     <label for="explanation" class="form-label">Açıklama</label>
                     <input v-model="explanation" type="text" class="ps-0 form-control" id="explanation">
-                  </div>
-
-                  <div class="mb-3">
-                    <label for="status" class="form-label">Durum</label>
-                    <input v-model="status" type="text" class="ps-0 form-control" id="status">
                   </div>
                 </div>
               </form>
@@ -121,7 +121,9 @@
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                 İş Ortağı
               </th>
-
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    Account Manager
+                </th>
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">
                 Fırsat Tarihi
               </th>
@@ -167,19 +169,25 @@
               </th>
 
               <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                Durum
+                Detay
               </th>
                 <th></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(project, i) in projects" :key="i">
-              <td class="align-middle text-center">
-                <span class="text-xs font-weight-bold">{{ projectDetails[i].client?.name }}</span>
+              <td  class="align-middle text-center">
+                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">{{ projectDetails[i].client?.name }}</span>
+
               </td>
               <td class="align-middle text-center">
-                <span class="text-xs font-weight-bold">{{ projectDetails[i].partner?.name }}</span>
+                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">{{ projectDetails[i].partner?.name }}</span>
+
               </td>
+                <td class="align-middle text-center">
+                    <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">{{ projectDetails[i].user?.first_name }} {{ projectDetails[i].user?.last_name }}</span>
+
+                </td>
               <td class="align-middle text-center">
                 <span class="text-xs font-weight-bold">{{ project?.registration_date }}</span>
               </td>
@@ -189,15 +197,18 @@
               </td>
 
               <td class="align-middle text-center">
-                <span class="text-xs font-weight-bold">{{ project?.count}}</span>
+                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">{{ project?.count}}</span>
+
               </td>
 
               <td class="align-middle text-center">
-                <span class="text-xs font-weight-bold">{{ project?.budget }}</span>
+                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">{{ project?.budget }}$</span>
+
               </td>
 
               <td class="align-middle text-center">
-                <span class="text-xs font-weight-bold">{{ project?.poc_request }}</span>
+                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">{{ project?.poc_request }}</span>
+
               </td>
 
               <td class="align-middle text-center">
@@ -217,11 +228,21 @@
               </td>
 
               <td class="align-middle text-center">
-                <span class="text-xs font-weight-bold">{{ project?.probability }}</span>
+                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">
+                    <Popper :hover="true">
+                      <vsud-progress
+                              :percentage="project?.probability"
+                      />
+                      <template #content>
+                        <div>%{{ project?.probability }}</div>
+                      </template>
+                    </Popper>
+                   </span>
+
               </td>
 
               <td class="align-middle text-center">
-                <span class="text-xs font-weight-bold">
+                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">
                     <Popper :hover="true">
                       <i class="far fa-question-circle"></i>
                       <template #content>
@@ -230,19 +251,25 @@
                     </Popper>
                     </span>
               </td>
-
-              <td class="align-middle text-center">
-                <span class="text-xs font-weight-bold">{{ project?.status }}</span>
-              </td>
                 <td class="align-middle text-center">
-                    <a class="me-4 text-secondary font-weight-bold text-xs" >
-                        <i class="far fa-edit"></i>
-                    </a>
-
-                    <a href="javascript:;" class="me-4 text-secondary font-weight-bold text-xs" @click="deleteProject($event, project?.id)">
-                        <i class="far fa-trash-alt me-2"></i>
-                    </a>
+                    <span class="text-xs font-weight-bold">
+                        <router-link :to="{ name: 'bill', params: { id: project.id} }" target="_blank"><i class="fa fa-external-link"></i></router-link>
+                    </span>
                 </td>
+<!--                <td class="align-middle text-center">-->
+<!--                    <a v-if="projectDetails[i].edited" href="javascript:;" class="me-4 text-secondary font-weight-bold text-xs" @click="commitEdit($event, project?.id)" >-->
+<!--                        <i class="far fa-check-circle"></i>-->
+<!--                    </a>-->
+<!--                    <a v-if="!projectDetails[i].edited" href="javascript:;" class="me-4 text-secondary font-weight-bold text-xs" @click="editProject($event, project?.id)">-->
+<!--                        <i class="far fa-edit"></i>-->
+<!--                    </a>-->
+<!--                    <a v-if="!projectDetails[i].edited" href="javascript:;" class="me-4 text-secondary font-weight-bold text-xs" @click="deleteProject($event, project?.id)">-->
+<!--                        <i  class="far fa-trash-alt me-2"></i>-->
+<!--                    </a>-->
+<!--                    <a v-if="projectDetails[i].edited" href="javascript:;" class="me-4 text-secondary font-weight-bold text-xs"  @click="cancelEdit($event,project?.id)">-->
+<!--                        <i class="far fa-window-close"></i>-->
+<!--                    </a>-->
+<!--                </td>-->
             </tr>
           </tbody>
         </table>
@@ -271,21 +298,24 @@
 <script>
 import axios from "axios";
 import moment from "moment";
-import { useVuelidate } from '@vuelidate/core'
-import {required, email,helpers, minLength} from '@vuelidate/validators'
+import VueSlider from "vue-slider-component";
+import 'vue-slider-component/theme/default.css';
+import VsudProgress from "@/components/VsudProgress.vue";
+import {th} from "vuetify/locale";
 export default {
   name: "ProjectsTable",
   components: {
-  },
-  setup () {
-      return { v$: useVuelidate() }
+      VsudProgress,
+      VueSlider
   },
   data() {
     return {
+      editId: null,
       clients: [],
       partners: [],
       projects: [],
       people: [],
+      users:[],
       clientEmp: [],
       partnerEmp: [],
       products: [],
@@ -299,10 +329,11 @@ export default {
       partnerContact: "",
       tenderDate: "",
       explanation: "",
-      status: "",
-      probability: "",
+      probability: 0,
       count : "",
       budget: "",
+      probValues : [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],
+      user:""
     }
   },
   async created() {
@@ -336,8 +367,8 @@ export default {
         }
     });
     if(projectsRes) {
-      this.projects = projectsRes.data.data;
-      this.formatObj(this.projects);
+        this.projects = projectsRes.data.data;
+        this.formatObj(this.projects);
     }
     const peopleResp =  await axios.get(`http://${window.location.hostname}:5000/api/kisiler`, {
         headers: {
@@ -345,8 +376,20 @@ export default {
         }
     });
     this.people = peopleResp.data.data
+
+    const usersRes = await axios.get(`http://${window.location.hostname}:5000/api/auth/kullanicilar`,{
+        headers: {
+            Authorization : `${localStorage.getItem("accessToken")}`
+        }
+    });
+    if(usersRes.data.data){
+        this.users = usersRes.data.data;
+    }
   },
   computed: {
+      th() {
+          return th
+      },
     clientEmployees() {
       if (!Array.isArray(this.people)) return []
       return this.people.filter(person => person.company === this.client)
@@ -357,12 +400,14 @@ export default {
     },
       projectDetails() {
         return this.projects.map(project => {
+            var edited = this.editId === project.id
             const client = this.clients.find(c => c.id === project?.client);
             const partner = this.partners.find(c => c.id === project?.partner);
             const client_contact = this.people.find(person => person.id === project?.client_contact);
             const partner_contact = this.people.find(person => person.id === project?.partner_contact);
             const product = this.products.find(prod => prod.id === project?.product);
-            return { client, partner, client_contact, partner_contact, product, project };
+            const user = this.users.find(usr => usr.id === project?.registered_by);
+            return { client, partner, client_contact, partner_contact, product, project, user, edited };
         });
       }
   },
@@ -381,7 +426,6 @@ export default {
               partner_contact: this.partnerContact,
               tender_date: this.tenderDate,
               info: this.explanation,
-              status: this.status,
               probability: this.probability,
               count: this.count,
               budget: this.budget
@@ -412,7 +456,7 @@ export default {
     },
 
     formatPoc(poc) {
-      let options = { Y: "Evet", N: "Hayır" }
+      let options = { 1: "Toplantı Aşaması", 2: "POC Talebi",3: "POC Aşaması", 4: "POC Gerçekleştirildi",5: "Yaklaşık Maliyet", 6: "Alım Aşaması",7: "Pazarlık Aşaması", 8: "Tamamlandı", }
       poc = options[poc]
       return poc
     },
@@ -453,6 +497,105 @@ export default {
          });
          this.projects = this.projects.filter(project => project.id !== id);
      },
+     async editProject(e, id) {
+         e.preventDefault();
+         let options = { "Toplantı Aşaması":1,"POC Talebi":2,"POC Aşaması":3,"POC Gerçekleştirildi":4,"Yaklaşık Maliyet":5,"Alım Aşaması":6,"Pazarlık Aşaması":7,"Tamamlandı":8 }
+         let proj = this.projects.find(p => p?.id === id)
+         if (proj) {
+             this.client = proj.client
+             this.partner = proj.partner
+             this.tenderDate = proj.tender_date
+             this.startDate = proj.registration_date
+             this.product = proj.product
+             this.poc = options[proj.poc_request]
+             this.endDate = proj.exp_end_date
+             this.explanation = proj.info
+             this.probability = proj.probability
+             this.clientContact = proj.client_contact
+             this.partnerContact = proj.partner_contact
+             this.count = proj.count
+             this.budget = proj.budget
+             this.user = proj.registered_by
+         }
+         this.editId = id
+       },
+       async cancelEdit(e, id) {
+           e.preventDefault();
+           let proj = this.projects.find(p => p?.id === id)
+           if (proj) {
+               this.client = ""
+               this.partner = ""
+               this.tenderDate = ""
+               this.startDate = ""
+               this.product = ""
+               this.poc = ""
+               this.endDate = ""
+               this.explanation = ""
+               this.probability =  ""
+               this.clientContact =  ""
+               this.partnerContact = ""
+               this.count = ""
+               this.budget = ""
+               this.user = ""
+           }
+           this.editId = null
+       },
+       async commitEdit(e, id) {
+           e.preventDefault();
+           if(this.poc === "8") {
+               alert("asdasd");
+           }
+           try {
+               const response = await axios.put(`http://${window.location.hostname}:5000/api/firsatlar/${id}/`, {
+                   client: this.client,
+                   partner: this.partner,
+                   registration_date: this.startDate,
+                   product: this.product,
+                   poc_request: this.poc,
+                   //exp_end_date:  this.endDate,
+                   client_contact: this.clientContact,
+                   partner_contact: this.partnerContact,
+                   //tender_date: this.tenderDate,
+                   info: this.explanation,
+                   probability: this.probability,
+                   count: this.count,
+                   budget: this.budget,
+                   registered_by:this.user
+               }, {
+                   headers: {
+                       Authorization : `${localStorage.getItem("accessToken")}`
+                   }
+               });
+               console.log(response)
+               const projectsRes = await axios.get(`http://${window.location.hostname}:5000/api/firsatlar/${id}/`, {
+                   headers: {
+                       Authorization : `${localStorage.getItem("accessToken")}`
+                   }
+               });
+               const index = this.projects.findIndex(obj => obj.id === id);
+               this.formatObj(projectsRes.data.data)
+               this.projects[index] = projectsRes.data.data
+               this.client = ""
+               this.partner = ""
+               this.tenderDate = ""
+               this.startDate = ""
+               this.product = ""
+               this.poc = ""
+               this.endDate = ""
+               this.explanation = ""
+               this.probability =  ""
+               this.clientContact =  ""
+               this.partnerContact = ""
+               this.count = ""
+               this.budget = ""
+               this.user = ""
+
+           }
+           catch (err) {
+               alert(err)
+           }
+           this.editId = null
+       }
   },
   watch: {
     client: {

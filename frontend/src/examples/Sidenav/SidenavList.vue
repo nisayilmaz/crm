@@ -40,6 +40,9 @@
         </sidenav-collapse>
       </li>
         <li class="nav-item">
+
+        </li>
+        <li class="nav-item">
         <sidenav-collapse nav-text="Kullanıcılar" :to="{ name: 'Users' }">
           <template #icon>
             <icon name="tables" />

@@ -10,5 +10,7 @@ urlpatterns = [
     path('firsatlar', ProjectApiView.as_view()),
     path('firsatlar/<int:pk>/', ProjectApiDetailView.as_view()),
     path('urunler/', ProductApiView.as_view()),
+    path('notlar/', NotesApiView.as_view()),
+    path('notlar/<int:pk>', NotesApiDetailView.as_view()),
 
 ]

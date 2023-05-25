@@ -8,6 +8,7 @@ from .serializers import *
 from knox.auth import TokenAuthentication as KnoxTokenAuthentication
 from knox.models import AuthToken
 
+
 class CompanyApiView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -50,6 +51,7 @@ class CompanyByRoleList(APIView):
 class CompanyApiDetailView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request, pk):
         try:
             company = Company.objects.get(pk=pk)
@@ -70,6 +72,7 @@ class CompanyApiDetailView(APIView):
 class PeopleApiView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request, *args, **kwargs):
         people = People.objects.all()
         serializer = PeopleSerializer(people, many=True)
@@ -93,6 +96,7 @@ class PeopleApiView(APIView):
 class PeopleApiDetailView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request, pk):
         try:
             person = People.objects.get(pk=pk)
@@ -113,6 +117,7 @@ class PeopleApiDetailView(APIView):
 class ProjectApiView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request, *args, **kwargs):
         token = request.META.get('HTTP_AUTHORIZATION', None)
         user = None
@@ -143,7 +148,6 @@ class ProjectApiView(APIView):
             'exp_end_date': request.data.get('exp_end_date'),
             'tender_date': request.data.get('tender_date'),
             'info': request.data.get('info'),
-            'status': request.data.get('status'),
             'count': request.data.get('count'),
             'client_contact': request.data.get('client_contact'),
             'partner_contact': request.data.get('partner_contact'),
@@ -159,9 +163,11 @@ class ProjectApiView(APIView):
             return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_201_CREATED)
         return Response({'status': 'failed', 'data': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ProjectApiDetailView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request, pk):
         try:
             project = Project.objects.get(pk=pk)
@@ -178,10 +184,75 @@ class ProjectApiDetailView(APIView):
         except ObjectDoesNotExist:
             return Response({'status': 'failed', 'data': []}, status=status.HTTP_204_NO_CONTENT)
 
+    def put(self, request, pk):
+        instance = Project.objects.get(pk=pk)
+        if not instance:
+            return Response(
+                {"res": "Object with id does not exists"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        data = {
+            'client': request.data.get('client', None),
+            'partner': request.data.get('partner'),
+            'registration_date': request.data.get('registration_date', None),
+            'exp_end_date': request.data.get('exp_end_date', None),
+            'tender_date': request.data.get('tender_date', None),
+            'info': request.data.get('info', None),
+            'count': request.data.get('count', None),
+            'client_contact': request.data.get('client_contact', None),
+            'partner_contact': request.data.get('partner_contact', None),
+            'product': request.data.get('product', None),
+            'budget': request.data.get('budget', None),
+            'poc_request': request.data.get('poc_request', None),
+            'probability': request.data.get('probability', None),
+            'registered_by': request.data.get('registered_by', None),
+        }
+        non_empty_data = {}
+        for key,value in data.items():
+            if value:
+                non_empty_data[key] = value
+        serializer = ProjectSerializer(instance=instance, data=non_empty_data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ProductApiView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request, *args, **kwargs):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
         return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
+
+
+class NotesApiView(APIView):
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        data = {
+            'title': request.data.get('title'),
+            'note': request.data.get('note'),
+            'project': request.data.get('project'),
+        }
+        serializer = NotesSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({'status': 'failed', 'data': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class NotesApiDetailView(APIView):
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, pk, *args, **kwargs):
+        notes = Notes.objects.filter(project=pk)
+        notes = notes.order_by("-creation_date")
+        serializer = NotesSerializer(notes, many=True)
+        return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
+
+
