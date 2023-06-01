@@ -604,6 +604,12 @@ export default {
       },
       immediate: false
     },
+    partner: {
+        handler() {
+            this.clientContact = null;
+        },
+        immediate: false
+    },
   }
 };
 </script>

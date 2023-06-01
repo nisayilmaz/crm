@@ -39,7 +39,11 @@ class LoginAPI(KnoxLoginView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)
-        return super(LoginAPI, self).post(request, format=None)
+        result = super(LoginAPI, self).post(request, format=None)
+
+        print({**result.data, "role": user.role})
+
+        return Response({**result.data, "role": user.role}, status=result.status_code)
 
 
 class CheckAuthentication(APIView):
@@ -50,7 +54,7 @@ class CheckAuthentication(APIView):
         try:
             user = request.user
             # If the user is authenticated, return a 200 status code
-            return Response({'detail': 'Authenticated'}, status=200)
+            return Response({'detail': 'Authenticated', "role":user.role}, status=200)
         except Exception:
             # If the token is not valid, log out the user and return a 401 status code
             LogoutView.as_view()(request._request)

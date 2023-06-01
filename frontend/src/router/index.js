@@ -6,7 +6,7 @@ import Companies from "@/views/Companies.vue";
 import Partners from "@/views/Partners.vue";
 import People from "@/views/People.vue";
 import Users from "@/views/Users.vue";
-import Profile from "@/views/Profile.vue";
+import ProjecctDetail from "@/views/ProjectDetail.vue";
 
 const routes = [
   {
@@ -70,7 +70,7 @@ const routes = [
   {
     path: "/in/:id",
     name: "bill",
-    component: Profile,
+    component: ProjecctDetail,
     props: true
 
   },

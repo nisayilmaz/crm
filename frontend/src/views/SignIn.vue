@@ -22,7 +22,9 @@
                   <p class="mb-0">Email ve şifre ile giriş yapınız.</p>
                 </div>
                 <div class="card-body">
-                  <form role="form" class="text-start">
+                    <span v-if="error" style="color: red"> Lütfen email ve şifrenizi kontrol edin.</span>
+
+                    <form role="form" class="text-start">
                     <label>Email</label>
                     <vsud-input v-model:value="username" type="email" placeholder="Email" name="email" />
                     <label>Şifre</label>
@@ -78,7 +80,8 @@ export default {
     return {
       bgImg,
       username: "",
-      password :""
+      password :"",
+      error: false
     }
   },
   beforeMount() {
@@ -106,11 +109,13 @@ export default {
                 if(response.data?.token) {
                     window.localStorage.setItem("accessToken", `Token ${response.data.token}`);
                     this.$router.push('/dashboard');
-
+                }
+                if(response.data?.role) {
+                    this.$store.state.role = response.data.role;
                 }
             }
             catch (error) {
-                alert("cannot be saved")
+                this.error = true
             }
         },
     }

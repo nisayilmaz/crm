@@ -90,6 +90,13 @@
                         </select>
                     </div>
                     <div class="mb-3">
+                        <label for="accountmngr" class="form-label">Account Manager</label>
+                        <select v-model="user" class="form-select" id="partner" @change="dropdownListener">
+                            <option selected>Kurum Seçin</option>
+                            <option v-for="user in users" :id="user.id" :value="user.id">{{ user.first_name }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="startDate" class="form-label">Fırsat Tarihi</label>
                         <input v-model="startDate" type="date" class="ps-0 form-control" id="startDate">
                     </div>
@@ -165,7 +172,7 @@
                     </div>
                 </div>
             </form>
-            <button @click="addProject" type="submit" class="btn btn-primary">Ekle</button>
+            <button @click="updateProject($event,project.id)" type="submit" class="btn btn-primary">Güncelle</button>
         </div>
     </div>
 </template>
@@ -178,7 +185,7 @@ import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/default.css';
 
 export default {
-    name: "ProfileCard",
+    name: "ProjectCard",
     components: {
         VueSlider
     },
@@ -210,7 +217,9 @@ export default {
             budget: "",
             probValues: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
             user: "",
-            edit: false
+            edit: false,
+            note: "",
+            title: ""
         }
     },
     async created() {
@@ -264,7 +273,16 @@ export default {
             const product = this.products.find(prod => prod.id === this.project?.product);
             const user = this.users.find(usr => usr.id === this.project?.registered_by);
             return {client, partner, client_contact, partner_contact, product, user};
-        }
+        },
+
+        clientEmployees() {
+          if (!Array.isArray(this.people)) return []
+          return this.people.filter(person => person.company === this.client)
+        },
+        partnerEmployees() {
+          if (!Array.isArray(this.people)) return []
+          return this.people.filter(person => person.company === this.partner)
+        },
     },
     methods: {
         formatDate(dateInput, format = 'DD.MM.YYYY') {
@@ -316,7 +334,37 @@ export default {
             this.count = ""
             this.budget = ""
             this.user = ""
+        },
+
+        async updateProject(e,id) {
+            e.preventDefault()
+            try {
+                const response = await axios.put(`http://${window.location.hostname}:5000/api/firsatlar/${id}/`, {
+                    client: this.client,
+                    partner: this.partner,
+                    registration_date: this.startDate,
+                    product: this.product,
+                    poc_request: this.poc,
+                    exp_end_date:  this.endDate,
+                    client_contact: this.clientContact,
+                    partner_contact: this.partnerContact,
+                    tender_date: this.tenderDate,
+                    info: this.explanation,
+                    probability: this.probability,
+                    count: this.count,
+                    budget: this.budget,
+                    registered_by: this.user
+                }, {
+                    headers: {
+                        Authorization: `${localStorage.getItem("accessToken")}`
+                    }
+                });
+            }catch (err) {
+                alert(err)
+            }
+            this.edit = false
         }
-    }
+    },
+
 };
 </script>

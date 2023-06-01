@@ -42,7 +42,7 @@
         <li class="nav-item">
 
         </li>
-        <li class="nav-item">
+        <li v-if="store.state.role === 1" class="nav-item">
         <sidenav-collapse nav-text="Kullanıcılar" :to="{ name: 'Users' }">
           <template #icon>
             <icon name="tables" />
@@ -83,9 +83,15 @@
 import Icon from "@/components/Icon.vue";
 import SidenavCollapse from "./SidenavCollapse.vue";
 import SidenavCard from "./SidenavCard.vue";
+import store from "@/store";
 
 export default {
   name: "SidenavList",
+    computed: {
+        store() {
+            return store
+        }
+    },
   components: {
     Icon,
     SidenavCollapse,

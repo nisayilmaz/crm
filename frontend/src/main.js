@@ -20,6 +20,8 @@ import "./assets/css/nucleo-svg.css";
 import SoftUIDashboard from "./soft-ui-dashboard";
 import axios from "axios";
 import Popper from "vue3-popper";
+import app from "@/App.vue";
+
 
 
 
@@ -29,16 +31,23 @@ router.beforeEach(async (to, from, next) => {
         const response = await axios.get(`http://${window.location.hostname}:5000/api/auth/check/`, {headers: {
                 Authorization : `${localStorage.getItem("accessToken")}`
             }});
+
+        if(response.data?.role) {
+            store.state.role = response.data.role;
+        }
     }
     catch(err){
         isAuthenticated = false
     }
-
-    if (to.meta.requiresAuth && !isAuthenticated) {
+    if(to.name === 'Users' && store.state.role !== 1) {
+        next('/dashboard')
+    }
+    else if (to.meta.requiresAuth && !isAuthenticated) {
         next('/sign-in')
     } else {
         next()
     }
+
 })
     const renderApp = () => {
         createApp(App)

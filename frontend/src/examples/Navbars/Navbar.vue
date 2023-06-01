@@ -230,7 +230,7 @@ export default {
           if(request.status === 204) {
               localStorage.removeItem("accessToken");
               this.$router.push('/sign-in')
-
+              this.$store.state.role = "";
           }
       },
 
