@@ -39,7 +39,7 @@ const routes = [
     }
   },
   {
-    path: "/projeler",
+    path: "/firsatlar",
     name: "Projects",
     component: Projects,
     meta: {
@@ -68,7 +68,7 @@ const routes = [
     component: SignIn,
   },
   {
-    path: "/in/:id",
+    path: "/firsat/:id",
     name: "bill",
     component: ProjecctDetail,
     props: true

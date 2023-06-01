@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 # Create your models here.
@@ -60,5 +62,20 @@ class Project(models.Model):
 class Notes(models.Model):
     title = models.CharField(max_length=255)
     note = models.TextField()
-    creation_date = models.DateTimeField(auto_now=True)
+    creation_date = models.DateField(auto_now=True)
     project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
+
+
+class FinishedProject(models.Model):
+    invoice_date = models.DateField()
+    invoice_amount = models.IntegerField()
+    end_date = models.DateField(default=datetime.now, blank=True)
+    client = models.ForeignKey(to=Company, related_name="finished_client", on_delete=models.CASCADE)
+    partner = models.ForeignKey(to=Company, related_name="finished_partner", on_delete=models.CASCADE)
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
+    project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
+    budget = models.FloatField()
+    count = models.IntegerField()
+    agreement = models.FileField(upload_to='sözlesmeler/', null=True, blank=True)
+
+

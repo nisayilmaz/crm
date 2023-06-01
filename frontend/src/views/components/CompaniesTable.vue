@@ -1,5 +1,5 @@
 <template>
-  <div class="card mb-4">
+  <div class="card mb-4 companies-table" :style="mainStyle">
     <div class="card-header pb-0">
       <h6>{{title}}</h6>
       <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -103,10 +103,16 @@ export default {
           name: "",
           phone: "",
           email: "",
-          address: ""
+          address: "",
+          loading: true
       };
   },
   computed: {
+      mainStyle(){
+        return {
+            opacity: this.loading ? 0 : 1
+        }
+      },
       title() {
           if(this.type === 'client') {
               return 'Kurumlar'
@@ -118,6 +124,8 @@ export default {
   },
   async created() {
       try {
+          this.loading = true
+
           const response = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/${this.type}`, {
               headers: {
                   Authorization : `${localStorage.getItem("accessToken")}`
@@ -135,7 +143,7 @@ export default {
       catch (err) {
         console.log("log in")
       }
-
+      this.loading = false
 
   },
   methods: {
@@ -174,3 +182,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+  .companies-table{
+    transition: opacity linear 0.1s;
+  }
+</style>

@@ -1,13 +1,14 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Sum
+from django.http import FileResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
 from rest_framework import permissions
-from .models import Company, People, Project
+from .models import Company, People, Project, FinishedProject
 from .serializers import *
 from knox.auth import TokenAuthentication as KnoxTokenAuthentication
 from knox.models import AuthToken
-
 
 class CompanyApiView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
@@ -208,7 +209,7 @@ class ProjectApiDetailView(APIView):
             'registered_by': request.data.get('registered_by', None),
         }
         non_empty_data = {}
-        for key,value in data.items():
+        for key, value in data.items():
             if value:
                 non_empty_data[key] = value
         serializer = ProjectSerializer(instance=instance, data=non_empty_data, partial=True)
@@ -245,6 +246,7 @@ class NotesApiView(APIView):
             return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_201_CREATED)
         return Response({'status': 'failed', 'data': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class NotesApiDetailView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -256,3 +258,66 @@ class NotesApiDetailView(APIView):
         return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
 
 
+class Statistics(APIView):
+    # authentication_classes = [KnoxTokenAuthentication]
+    # permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        companies = Company.objects
+        client_cnt = companies.filter(role="client").count()
+        partner_cnt = companies.filter(role="partner").count()
+        projects = Project.objects.all()
+        project_cnt = projects.count()
+        fin_cnt = projects.filter(poc_request=8).count()
+        budget = projects.aggregate(Sum('budget'))
+        data = {
+            "client_cnt": client_cnt,
+            "partner_cnt": partner_cnt,
+            "project_cnt": project_cnt,
+            "fin_cnt": fin_cnt,
+            "total_budget": budget["budget__sum"]
+        }
+        return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
+
+
+class FinishedProjectApiView(APIView):
+    # authentication_classes = [KnoxTokenAuthentication]
+    # permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request, *args, **kwargs):
+        finished = FinishedProject.objects.all()
+        serializer = FinishedProjectSerializer(finished, many=True)
+        return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        data = {
+            'client': request.data.get('client'),
+            'partner': request.data.get('partner'),
+            'count': request.data.get('count'),
+            'product': request.data.get('product'),
+            'budget': request.data.get('budget'),
+            'invoice_date': request.data.get('invoice_date'),
+            'invoice_amount': request.data.get('invoice_amount'),
+            'agreement': request.FILES['file'],
+            'end_date': request.data.get('end_date'),
+            'project': request.data.get('project'),
+        }
+        serializer = FinishedProjectSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_201_CREATED)
+        print(serializer.errors)
+
+        return Response({'status': 'failed', 'data': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+def download(request, pk):
+    proj = FinishedProject.objects.get(pk=pk)
+    file_handle = proj.agreement.open()
+    # send file
+    response = FileResponse(file_handle, content_type='application/pdf')
+    response['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, responseType, Content-Disposition'
+
+    response['Content-Disposition'] = 'attachment; filename="aaaaa"'
+    response['Content-Length'] = proj.agreement.size
+    print(response)
+    return response

@@ -170,7 +170,27 @@
                         <label for="explanation" class="form-label">Açıklama</label>
                         <input v-model="explanation" type="text" class="ps-0 form-control" id="explanation">
                     </div>
+                    <div v-if="poc === '8' || poc === 8" class="mb-3">
+                        <label for="file" class="form-label">Sözleşme</label>
+                        <input type="file" class="ps-0 form-control" @change="handleFile" id="file">
+                    </div>
+
+                    <div v-if="poc === '8' || poc === 8" class="mb-3">
+                        <label for="finDate" class="form-label">Bitiş Tarihi</label>
+                        <input v-model="finDate" type="date" class="ps-0 form-control"  id="finDate">
+                    </div>
+
+                    <div v-if="poc === '8' || poc === 8" class="mb-3">
+                        <label for="invoiceDate" class="form-label">Fatura Tarihi</label>
+                        <input  v-model="invoiceDate" type="date" class="ps-0 form-control" id="invoiceDate">
+                    </div>
+
+                    <div v-if="poc === '8' || poc === 8" class="mb-3">
+                        <label for="invoiceAmount" class="form-label">Fatura Miktarı</label>
+                        <input  v-model="invoiceAmount" type="text" class="ps-0 form-control" id="invoiceAmount">
+                    </div>
                 </div>
+
             </form>
             <button @click="updateProject($event,project.id)" type="submit" class="btn btn-primary">Güncelle</button>
         </div>
@@ -183,6 +203,7 @@ import users from "@/views/Users.vue";
 import moment from "moment/moment";
 import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/default.css';
+import Swal from 'sweetalert2'
 
 export default {
     name: "ProjectCard",
@@ -219,7 +240,11 @@ export default {
             user: "",
             edit: false,
             note: "",
-            title: ""
+            title: "",
+            file: null,
+            finDate: "",
+            invoiceDate: "",
+            invoiceAmount: ""
         }
     },
     async created() {
@@ -335,10 +360,31 @@ export default {
             this.budget = ""
             this.user = ""
         },
-
+        handleFile(event) {
+            this.file = event.target.files[0];
+        },
         async updateProject(e,id) {
             e.preventDefault()
             try {
+                if (this.poc === 8 || this.poc === "8") {
+                    const formData = new FormData();
+                    formData.append('file', this.file);
+                    formData.append('client', this.client);
+                    formData.append('partner', this.partner);
+                    formData.append('count', this.count);
+                    formData.append('budget', this.budget);
+                    formData.append('invoice_date', this.invoiceDate);
+                    formData.append('invoice_amount', this.invoiceAmount);
+                    formData.append('product', 1);
+                    formData.append('end_date', this.finDate);
+                    formData.append('project', this.project.id);
+                    let resp = await axios.post(`http://${window.location.hostname}:5000/api/sonlanan/`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            Authorization: `${localStorage.getItem("accessToken")}`
+                        }
+                    })
+                }
                 const response = await axios.put(`http://${window.location.hostname}:5000/api/firsatlar/${id}/`, {
                     client: this.client,
                     partner: this.partner,
@@ -359,8 +405,17 @@ export default {
                         Authorization: `${localStorage.getItem("accessToken")}`
                     }
                 });
+                Swal.fire(
+                    'Güncellendi',
+                    'Fırsat Başarıyla Güncellendi!',
+                    'success'
+                )
             }catch (err) {
-                alert(err)
+                Swal.fire(
+                    'Hata',
+                    'Fırsat Güncellenemedi!',
+                    'error'
+                )
             }
             this.edit = false
         }

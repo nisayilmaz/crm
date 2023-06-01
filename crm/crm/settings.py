@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 from .database import DATABASES
 
@@ -139,8 +139,19 @@ CORS_ALLOWED_ORIGINS = [
     "http://192.168.1.121:5050",
 
 ]
+CORS_EXPOSE_HEADERS = [
+    "responseType",
+    "Content-Disposition"
 
+]
+CORS_ALLOW_HEADERS = [
+    'Content-Type',
+    'Authorization',
+    'responseType',
+    'Content-Disposition',
+]
 AUTH_USER_MODEL = 'accounts.CustomUser'
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 

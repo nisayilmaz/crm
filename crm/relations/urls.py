@@ -12,5 +12,8 @@ urlpatterns = [
     path('urunler/', ProductApiView.as_view()),
     path('notlar/', NotesApiView.as_view()),
     path('notlar/<int:pk>', NotesApiDetailView.as_view()),
+    path('veriler/', Statistics.as_view()),
+    path('sonlanan/', FinishedProjectApiView.as_view()),
+    path('download/<int:pk>', download),
 
 ]

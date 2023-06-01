@@ -1,7 +1,7 @@
 <template>
   <div class="card mb-4">
     <div class="card-header pb-0">
-      <h6>Projects table</h6>
+      <h6>Fırsatlar</h6>
       <div class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h4 class="accordion-header">
@@ -387,9 +387,7 @@ export default {
     }
   },
   computed: {
-      th() {
-          return th
-      },
+
     clientEmployees() {
       if (!Array.isArray(this.people)) return []
       return this.people.filter(person => person.company === this.client)
@@ -543,7 +541,6 @@ export default {
        async commitEdit(e, id) {
            e.preventDefault();
            if(this.poc === "8") {
-               alert("asdasd");
            }
            try {
                const response = await axios.put(`http://${window.location.hostname}:5000/api/firsatlar/${id}/`, {
