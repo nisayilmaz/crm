@@ -9,7 +9,7 @@ from .models import Company, People, Project, FinishedProject
 from .serializers import *
 from knox.auth import TokenAuthentication as KnoxTokenAuthentication
 from knox.models import AuthToken
-
+import os
 class CompanyApiView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -313,11 +313,11 @@ class FinishedProjectApiView(APIView):
 def download(request, pk):
     proj = FinishedProject.objects.get(pk=pk)
     file_handle = proj.agreement.open()
+    file_name = os.path.basename(str(file_handle))
     # send file
     response = FileResponse(file_handle, content_type='application/pdf')
     response['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, responseType, Content-Disposition'
-
-    response['Content-Disposition'] = 'attachment; filename="aaaaa"'
+    response['Content-Disposition'] = 'attachment; filename="' + file_name + '"'
     response['Content-Length'] = proj.agreement.size
     print(response)
     return response

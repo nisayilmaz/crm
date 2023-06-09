@@ -59,7 +59,7 @@
 
               </td>
                 <td class="align-middle text-center">
-                    <span  class="text-xs font-weight-bold">{{ projectDetails[i].user?.first_name }} {{ projectDetails[i].user?.last_name }}</span>
+                    <span  class="text-xs font-weight-bold">{{ projectDetails[i].manager?.first_name }} {{ projectDetails[i].manager?.last_name }}</span>
 
                 </td>
                 <td class="align-middle text-center">
@@ -93,11 +93,11 @@
                     <a style="cursor: pointer" @click="download(project.id)" class="text-xs font-weight-bold">Sözleşme İndir</a>
                 </td>
 
-                <td class="align-middle text-center">
-                    <span class="text-xs font-weight-bold">
-                        <router-link :to="{ name: 'bill', params: { id: project.id} }" target="_blank"><i class="fa fa-external-link"></i></router-link>
-                    </span>
-                </td>
+<!--                <td class="align-middle text-center">-->
+<!--                    <span class="text-xs font-weight-bold">-->
+<!--                        <router-link :to="{ name: 'bill', params: { id: project.id} }" target="_blank"><i class="fa fa-external-link"></i></router-link>-->
+<!--                    </span>-->
+<!--                </td>-->
             </tr>
           </tbody>
         </table>
@@ -201,6 +201,7 @@ export default {
         }
     });
     if(usersRes.data.data){
+        console.log(usersRes.data.data)
         this.users = usersRes.data.data;
     }
   },
@@ -211,7 +212,9 @@ export default {
             const client = this.clients.find(c => c.id === project?.client);
             const partner = this.partners.find(c => c.id === project?.partner);
             const product = this.products.find(prod => prod.id === project?.product);
-            return { client, partner, product, project, };
+            const manager = this.users.find(user => user.id === project?.registered_by)
+
+            return { client, partner, product, project,manager };
         });
       }
   },
@@ -227,12 +230,18 @@ export default {
               Authorization: `${localStorage.getItem("accessToken")}`,
 
           })
-        console.log(response.headers["Content-Disposition"])
+        let filename = "sozlesme.pdf"
+        if (typeof response.headers["content-disposition"] === "string") {
+            let regex = /filename="([^"]+)"/.exec((response.headers["content-disposition"]))
+            if(regex) {
+                filename = regex[1]
+            }
+        }
 
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement('a');
           link.href = url;
-          link.setAttribute('download', `report.pdf`);
+          link.setAttribute('download', filename);
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
