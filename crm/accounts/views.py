@@ -33,15 +33,12 @@ class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
-        print(KnoxTokenAuthentication())
 
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)
         result = super(LoginAPI, self).post(request, format=None)
-
-        print({**result.data, "role": user.role})
 
         return Response({**result.data, "role": user.role}, status=result.status_code)
 

@@ -1,10 +1,6 @@
 <template>
   <div class="pb-0 card-header">
-    <h6>Sales overview</h6>
-    <p class="text-sm">
-      <i class="fa fa-arrow-up text-success"></i>
-      <span class="font-weight-bold">4% more</span> in 2021
-    </p>
+    <h6>Satış Özeti</h6>
   </div>
   <div class="p-3 card-body">
     <div class="chart">
@@ -18,8 +14,13 @@ import Chart from "chart.js/auto";
 
 export default {
   name: "GradientLineChart",
+  props:{
+    graphData : {
+        type: Array,
+    },
+  },
 
-  mounted() {
+    mounted() {
     var ctx2 = document.getElementById("chart-line").getContext("2d");
 
     var gradientStroke1 = ctx2.createLinearGradient(0, 230, 0, 50);
@@ -33,14 +34,13 @@ export default {
     gradientStroke2.addColorStop(1, "rgba(20,23,39,0.2)");
     gradientStroke2.addColorStop(0.2, "rgba(72,72,176,0.0)");
     gradientStroke2.addColorStop(0, "rgba(20,23,39,0)"); //purple colors
-
-    new Chart(ctx2, {
+    let chart = new Chart(ctx2, {
       type: "line",
       data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        labels: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım","Aralık"],
         datasets: [
           {
-            label: "Mobile apps",
+            label: "Fırsat Fatura Tutarı",
             tension: 0.4,
             borderWidth: 0,
             pointRadius: 0,
@@ -49,22 +49,10 @@ export default {
             borderWidth: 3,
             backgroundColor: gradientStroke1,
             fill: true,
-            data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+            data: this.graphData,
             maxBarThickness: 6,
           },
-          {
-            label: "Websites",
-            tension: 0.4,
-            borderWidth: 0,
-            pointRadius: 0,
-            borderColor: "#3A416F",
-            // eslint-disable-next-line no-dupe-keys
-            borderWidth: 3,
-            backgroundColor: gradientStroke2,
-            fill: true,
-            data: [30, 90, 40, 140, 290, 290, 340, 230, 400],
-            maxBarThickness: 6,
-          },
+
         ],
       },
       options: {
@@ -123,6 +111,10 @@ export default {
         },
       },
     });
+        this.$watch('graphData', (newData) => {
+            chart.data.datasets[0].data = newData;
+            chart.update();
+        })
   },
 };
 </script>

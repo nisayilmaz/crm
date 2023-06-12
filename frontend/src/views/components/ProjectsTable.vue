@@ -7,7 +7,7 @@
           <h4 class="accordion-header">
             <button class="ps-0 accordion-button collapsed " type="button" data-bs-toggle="collapse"
               data-bs-target="#addProject" aria-expanded="false" aria-controls="flush-collapseOne">
-              Proje Ekle
+              Fırsat Ekle
             </button>
           </h4>
           <div id="addProject" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -177,15 +177,15 @@
           <tbody>
             <tr v-for="(project, i) in projects" :key="i">
               <td  class="align-middle text-center">
-                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">{{ projectDetails[i].client?.name }}</span>
+                <span class="text-xs font-weight-bold">{{ projectDetails[i].client?.name }}</span>
 
               </td>
               <td class="align-middle text-center">
-                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">{{ projectDetails[i].partner?.name }}</span>
+                <span class="text-xs font-weight-bold">{{ projectDetails[i].partner?.name }}</span>
 
               </td>
                 <td class="align-middle text-center">
-                    <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">{{ projectDetails[i].user?.first_name }} {{ projectDetails[i].user?.last_name }}</span>
+                    <span  class="text-xs font-weight-bold">{{ projectDetails[i].user?.first_name }} {{ projectDetails[i].user?.last_name }}</span>
 
                 </td>
               <td class="align-middle text-center">
@@ -197,17 +197,17 @@
               </td>
 
               <td class="align-middle text-center">
-                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">{{ project?.count}}</span>
+                <span class="text-xs font-weight-bold">{{ project?.count}}</span>
 
               </td>
 
               <td class="align-middle text-center">
-                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">{{ project?.budget }}$</span>
+                <span class="text-xs font-weight-bold">{{ project?.budget }}$</span>
 
               </td>
 
               <td class="align-middle text-center">
-                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">{{ project?.poc_request }}</span>
+                <span class="text-xs font-weight-bold">{{ project?.poc_request }}</span>
 
               </td>
 
@@ -228,7 +228,7 @@
               </td>
 
               <td class="align-middle text-center">
-                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">
+                <span class="text-xs font-weight-bold">
                     <Popper :hover="true">
                       <vsud-progress
                               :percentage="project?.probability"
@@ -242,7 +242,7 @@
               </td>
 
               <td class="align-middle text-center">
-                <span v-if="!projectDetails[i].edited" class="text-xs font-weight-bold">
+                <span class="text-xs font-weight-bold">
                     <Popper :hover="true">
                       <i class="far fa-question-circle"></i>
                       <template #content>
@@ -256,20 +256,6 @@
                         <router-link :to="{ name: 'bill', params: { id: project.id} }" target="_blank"><i class="fa fa-external-link"></i></router-link>
                     </span>
                 </td>
-<!--                <td class="align-middle text-center">-->
-<!--                    <a v-if="projectDetails[i].edited" href="javascript:;" class="me-4 text-secondary font-weight-bold text-xs" @click="commitEdit($event, project?.id)" >-->
-<!--                        <i class="far fa-check-circle"></i>-->
-<!--                    </a>-->
-<!--                    <a v-if="!projectDetails[i].edited" href="javascript:;" class="me-4 text-secondary font-weight-bold text-xs" @click="editProject($event, project?.id)">-->
-<!--                        <i class="far fa-edit"></i>-->
-<!--                    </a>-->
-<!--                    <a v-if="!projectDetails[i].edited" href="javascript:;" class="me-4 text-secondary font-weight-bold text-xs" @click="deleteProject($event, project?.id)">-->
-<!--                        <i  class="far fa-trash-alt me-2"></i>-->
-<!--                    </a>-->
-<!--                    <a v-if="projectDetails[i].edited" href="javascript:;" class="me-4 text-secondary font-weight-bold text-xs"  @click="cancelEdit($event,project?.id)">-->
-<!--                        <i class="far fa-window-close"></i>-->
-<!--                    </a>-->
-<!--                </td>-->
             </tr>
           </tbody>
         </table>
@@ -310,7 +296,6 @@ export default {
   },
   data() {
     return {
-      editId: null,
       clients: [],
       partners: [],
       projects: [],
@@ -369,6 +354,8 @@ export default {
     if(projectsRes) {
         this.projects = projectsRes.data.data;
         this.formatObj(this.projects);
+        this.projects = this.projects.filter(project => project.poc_request !== 'Tamamlandı');
+
     }
     const peopleResp =  await axios.get(`http://${window.location.hostname}:5000/api/kisiler`, {
         headers: {
@@ -398,14 +385,13 @@ export default {
     },
       projectDetails() {
         return this.projects.map(project => {
-            var edited = this.editId === project.id
             const client = this.clients.find(c => c.id === project?.client);
             const partner = this.partners.find(c => c.id === project?.partner);
             const client_contact = this.people.find(person => person.id === project?.client_contact);
             const partner_contact = this.people.find(person => person.id === project?.partner_contact);
             const product = this.products.find(prod => prod.id === project?.product);
             const user = this.users.find(usr => usr.id === project?.registered_by);
-            return { client, partner, client_contact, partner_contact, product, project, user, edited };
+            return { client, partner, client_contact, partner_contact, product, project, user };
         });
       }
   },
@@ -440,6 +426,20 @@ export default {
           });
           this.formatObj(projectsRes.data.data)
           this.projects.push(projectsRes.data.data);
+          this.client = ""
+          this.partner = ""
+          this.startDate = ""
+          this.product = ""
+          this.poc = ""
+          this.endDate = ""
+          this.clientContact = ""
+          this.partnerContact = ""
+          this.tenderDate = ""
+          this.explanation = ""
+          this.probability = 0
+          this.count = ""
+          this.budget = ""
+          this.user = ""
       }
       catch (err) {
           alert(err)
@@ -486,113 +486,6 @@ export default {
            projList.poc_request = this.formatPoc(projList.poc_request)
        }
     },
-     async deleteProject(e, id) {
-         e.preventDefault();
-         await axios.delete(`http://${window.location.hostname}:5000/api/firsatlar/${id}`, {
-             headers: {
-                 Authorization : `${localStorage.getItem("accessToken")}`
-             }
-         });
-         this.projects = this.projects.filter(project => project.id !== id);
-     },
-     async editProject(e, id) {
-         e.preventDefault();
-         let options = { "Toplantı Aşaması":1,"POC Talebi":2,"POC Aşaması":3,"POC Gerçekleştirildi":4,"Yaklaşık Maliyet":5,"Alım Aşaması":6,"Pazarlık Aşaması":7,"Tamamlandı":8 }
-         let proj = this.projects.find(p => p?.id === id)
-         if (proj) {
-             this.client = proj.client
-             this.partner = proj.partner
-             this.tenderDate = proj.tender_date
-             this.startDate = proj.registration_date
-             this.product = proj.product
-             this.poc = options[proj.poc_request]
-             this.endDate = proj.exp_end_date
-             this.explanation = proj.info
-             this.probability = proj.probability
-             this.clientContact = proj.client_contact
-             this.partnerContact = proj.partner_contact
-             this.count = proj.count
-             this.budget = proj.budget
-             this.user = proj.registered_by
-         }
-         this.editId = id
-       },
-       async cancelEdit(e, id) {
-           e.preventDefault();
-           let proj = this.projects.find(p => p?.id === id)
-           if (proj) {
-               this.client = ""
-               this.partner = ""
-               this.tenderDate = ""
-               this.startDate = ""
-               this.product = ""
-               this.poc = ""
-               this.endDate = ""
-               this.explanation = ""
-               this.probability =  ""
-               this.clientContact =  ""
-               this.partnerContact = ""
-               this.count = ""
-               this.budget = ""
-               this.user = ""
-           }
-           this.editId = null
-       },
-       async commitEdit(e, id) {
-           e.preventDefault();
-           if(this.poc === "8") {
-           }
-           try {
-               const response = await axios.put(`http://${window.location.hostname}:5000/api/firsatlar/${id}/`, {
-                   client: this.client,
-                   partner: this.partner,
-                   registration_date: this.startDate,
-                   product: this.product,
-                   poc_request: this.poc,
-                   //exp_end_date:  this.endDate,
-                   client_contact: this.clientContact,
-                   partner_contact: this.partnerContact,
-                   //tender_date: this.tenderDate,
-                   info: this.explanation,
-                   probability: this.probability,
-                   count: this.count,
-                   budget: this.budget,
-                   registered_by:this.user
-               }, {
-                   headers: {
-                       Authorization : `${localStorage.getItem("accessToken")}`
-                   }
-               });
-               console.log(response)
-               const projectsRes = await axios.get(`http://${window.location.hostname}:5000/api/firsatlar/${id}/`, {
-                   headers: {
-                       Authorization : `${localStorage.getItem("accessToken")}`
-                   }
-               });
-               const index = this.projects.findIndex(obj => obj.id === id);
-               this.formatObj(projectsRes.data.data)
-               this.projects[index] = projectsRes.data.data
-               this.client = ""
-               this.partner = ""
-               this.tenderDate = ""
-               this.startDate = ""
-               this.product = ""
-               this.poc = ""
-               this.endDate = ""
-               this.explanation = ""
-               this.probability =  ""
-               this.clientContact =  ""
-               this.partnerContact = ""
-               this.count = ""
-               this.budget = ""
-               this.user = ""
-
-           }
-           catch (err) {
-               alert(err)
-           }
-           this.editId = null
-       }
   },
   watch: {
     client: {
@@ -603,7 +496,7 @@ export default {
     },
     partner: {
         handler() {
-            this.clientContact = null;
+            this.partnerContact = null;
         },
         immediate: false
     },

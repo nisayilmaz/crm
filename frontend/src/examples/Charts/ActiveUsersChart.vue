@@ -4,10 +4,7 @@
       <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
     </div>
   </div>
-  <h6 class="mt-4 mb-0 ms-2">Active Users</h6>
-  <p class="text-sm ms-2">
-    (<span class="font-weight-bolder">+23%</span>) than last week
-  </p>
+
   <div class="container border-radius-lg">
     <div class="row">
       <div class="py-3 col-3 ps-0">
@@ -232,21 +229,26 @@ import Chart from "chart.js/auto";
 
 export default {
   name: "ActiveUsersChart",
+  props:{
+      graphData : {
+          type: Array,
+      },
+  },
   mounted() {
     var ctx = document.getElementById("chart-bars").getContext("2d");
-    new Chart(ctx, {
+    let chart = new Chart(ctx, {
       type: "bar",
       data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        labels: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım","Aralık"],
         datasets: [
           {
-            label: "Sales",
+            label: "Kaydedilen Fırsat",
             tension: 0.4,
             borderWidth: 0,
             borderRadius: 4,
             borderSkipped: false,
             backgroundColor: "#fff",
-            data: [450, 200, 100, 220, 500, 100, 400, 230, 500],
+            data: this.graphData,
             maxBarThickness: 6,
           },
         ],
@@ -299,6 +301,10 @@ export default {
         },
       },
     });
+      this.$watch('graphData', (newData) => {
+          chart.data.datasets[0].data = newData;
+          chart.update();
+      })
   },
 };
 </script>

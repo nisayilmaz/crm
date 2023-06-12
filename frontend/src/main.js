@@ -20,7 +20,7 @@ import "./assets/css/nucleo-svg.css";
 import SoftUIDashboard from "./soft-ui-dashboard";
 import axios from "axios";
 import Popper from "vue3-popper";
-import app from "@/App.vue";
+import VueApexCharts from "vue3-apexcharts";
 
 
 
@@ -52,6 +52,7 @@ router.beforeEach(async (to, from, next) => {
     const renderApp = () => {
         createApp(App)
         .component("Popper", Popper)
+        .use(VueApexCharts)
         .use(store)
         .use(router)
         .use(SoftUIDashboard)

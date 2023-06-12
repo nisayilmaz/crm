@@ -77,5 +77,6 @@ class FinishedProject(models.Model):
     budget = models.FloatField()
     count = models.IntegerField()
     agreement = models.FileField(upload_to='sözlesmeler/', null=True, blank=True)
+    registered_by = models.ForeignKey(to=CustomUser, on_delete=models.PROTECT)
 
 

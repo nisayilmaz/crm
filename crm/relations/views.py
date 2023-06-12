@@ -1,5 +1,8 @@
+from datetime import date
+
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Sum
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncMonth, ExtractMonth
 from django.http import FileResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,6 +13,8 @@ from .serializers import *
 from knox.auth import TokenAuthentication as KnoxTokenAuthentication
 from knox.models import AuthToken
 import os
+
+
 class CompanyApiView(APIView):
     authentication_classes = [KnoxTokenAuthentication]
     permission_classes = (permissions.IsAuthenticated,)
@@ -268,24 +273,63 @@ class Statistics(APIView):
         partner_cnt = companies.filter(role="partner").count()
         projects = Project.objects.all()
         project_cnt = projects.count()
-        fin_cnt = projects.filter(poc_request=8).count()
         budget = projects.aggregate(Sum('budget'))
+        current_year = date.today().year
+        finished_projects = FinishedProject.objects.all()
+        fin_cnt = finished_projects.count()
+
+        sales_by_month = finished_projects.filter(invoice_date__year=current_year) \
+            .annotate(month=ExtractMonth('invoice_date')) \
+            .values('month') \
+            .annotate(count=Sum('invoice_amount')) \
+            .values('month', 'count')
+
+        registration_by_month = projects.filter(registration_date__year=current_year) \
+            .annotate(month=ExtractMonth('registration_date')) \
+            .values('month') \
+            .annotate(count=Count('pk')) \
+            .values('month', 'count')
+
+        sales = [0] * 12
+        registration =[0] * 12
+        for item in sales_by_month:
+            if item.get("month", None) is not None:
+                sales[item.get("month", 0) - 1] = item.get("count", 0)
+
+        for item in registration_by_month:
+            if item.get("month", None) is not None:
+                registration[item.get("month", 0) - 1] = item.get("count", 0)
+
         data = {
             "client_cnt": client_cnt,
             "partner_cnt": partner_cnt,
             "project_cnt": project_cnt,
             "fin_cnt": fin_cnt,
-            "total_budget": budget["budget__sum"]
+            "total_budget": budget["budget__sum"],
+            "monthly_sales": sales,
+            "monthly_reg": registration
         }
         return Response({'status': 'success', 'data': data}, status=status.HTTP_200_OK)
 
 
 class FinishedProjectApiView(APIView):
-    # authentication_classes = [KnoxTokenAuthentication]
-    # permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request, *args, **kwargs):
-        finished = FinishedProject.objects.all()
-        serializer = FinishedProjectSerializer(finished, many=True)
+        token = request.META.get('HTTP_AUTHORIZATION', None)
+        user = None
+        if token:
+            token = token.split(" ")[1]
+            user = AuthToken.objects.get(token_key=token[0:8]).user
+        role = None
+        if user:
+            role = user.role
+        if role == 1:
+            projects = FinishedProject.objects.all()
+        elif role == 2:
+            projects = FinishedProject.objects.filter(registered_by=user)
+        serializer = FinishedProjectSerializer(projects, many=True)
         return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
@@ -297,15 +341,15 @@ class FinishedProjectApiView(APIView):
             'budget': request.data.get('budget'),
             'invoice_date': request.data.get('invoice_date'),
             'invoice_amount': request.data.get('invoice_amount'),
-            'agreement': request.FILES['file'],
+            'agreement': request.FILES.get('file', None),
             'end_date': request.data.get('end_date'),
             'project': request.data.get('project'),
+            'registered_by': request.data.get('registered_by'),
         }
         serializer = FinishedProjectSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_201_CREATED)
-        print(serializer.errors)
 
         return Response({'status': 'failed', 'data': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -319,5 +363,4 @@ def download(request, pk):
     response['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, responseType, Content-Disposition'
     response['Content-Disposition'] = 'attachment; filename="' + file_name + '"'
     response['Content-Length'] = proj.agreement.size
-    print(response)
     return response

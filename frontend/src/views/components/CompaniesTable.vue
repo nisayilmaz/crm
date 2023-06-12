@@ -141,7 +141,6 @@ export default {
           }
       }
       catch (err) {
-        console.log("log in")
       }
       this.loading = false
 

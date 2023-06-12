@@ -290,7 +290,6 @@ export default {
     },
     computed: {
         projectDetails() {
-            //var edited = this.editId === project.id
             const client = this.clients.find(c => c.id === this.project?.client);
             const partner = this.partners.find(c => c.id === this.project?.partner);
             const client_contact = this.people.find(person => person.id === this.project?.client_contact);
@@ -378,6 +377,7 @@ export default {
                     formData.append('product', 1);
                     formData.append('end_date', this.finDate);
                     formData.append('project', this.project.id);
+                    formData.append('registered_by', this.user);
                     let resp = await axios.post(`http://${window.location.hostname}:5000/api/sonlanan/`, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',

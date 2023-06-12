@@ -47,15 +47,21 @@
             </div>
           </div>
         </div>
+
       </div>
       <div class="card-body px-0 pt-0 pb-2">
+          <div class="row">
+              <div class="col-3 ms-3">
+                  <input class="ps-0 form-control text-xs" v-model="search">
+              </div>
+          </div>
         <div class="table-responsive p-0">
           <table class="table align-items-center justify-content-center mb-0">
             <thead>
               <tr>
                 <th
                   class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                  Ad 
+                  Ad
                 </th>
                 <th
                   class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
@@ -77,7 +83,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="person in people" :key="person.id">
+              <tr v-for="person in filteredData" :key="person.id">
                 <td>
                   <div class="d-flex px-2">
                     <div class="my-auto">
@@ -114,7 +120,7 @@
       </div>
     </div>
   </template>
-  
+
   <script>
   import axios from "axios";
   export default {
@@ -129,7 +135,8 @@
         last_name : "",
         email : "",
         phone: "",
-        company: ""
+        company: "",
+        search: ""
       }
     },
     async created() {
@@ -147,6 +154,12 @@
         });
         this.people = people.data.data;
     },
+      computed: {
+        filteredData() {
+            return this.people.filter(person => {
+                return (person?.first_name + person?.last_name).toString().toLowerCase().includes(this.search.toLowerCase())})
+        }
+      },
     methods: {
       async addPerson(e) {
         e.preventDefault();

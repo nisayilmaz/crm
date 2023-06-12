@@ -65,15 +65,6 @@
                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                             Email
                         </th>
-                        <th
-                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                            Telefon
-                        </th>
-                        <th
-                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                            Kurum
-                        </th>
-                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -90,22 +81,6 @@
                         </td>
                         <td>
                             <span class="text-xs font-weight-bold">{{user.email}}</span>
-                        </td>
-                        <td >
-                            <span class="me-2 text-xs font-weight-bold">{{user.phone}}</span>
-                        </td>
-                        <td class="align-middle">
-                            <span class="me-2 text-xs font-weight-bold">{{ getCompanyName(user.company) }}</span>
-
-                        </td>
-                        <td class="align-middle">
-                            <a class="me-4 text-secondary font-weight-bold text-xs" >
-                                <i class="far fa-edit"></i>
-                            </a>
-
-                            <a class="me-4 text-secondary font-weight-bold text-xs" @click="deletePerson($event, user.id)">
-                                <i class="far fa-trash-alt me-2"></i>
-                            </a>
                         </td>
                     </tr>
                     </tbody>
@@ -153,7 +128,6 @@ export default {
             this.users = usersRes.data.data
         }
         catch (err) {
-            console.log(err)
         }
     },
     methods: {
@@ -167,11 +141,9 @@ export default {
                     first_name : this.first_name,
                     last_name : this.last_name
                 });
-                console.log(resp)
                 this.users.push(resp.data.user)
             }
             catch (err){
-                console.log(err)
             }
             this.email = "";
             this.password = "";
@@ -195,7 +167,6 @@ export default {
                 this.users = this.users.filter(person => person.id !== id);
             }
             catch (err) {
-                console.log(err)
             }
         },
     },

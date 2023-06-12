@@ -145,23 +145,15 @@
         <div class="card z-index-2">
           <div class="p-3 card-body">
             <!-- chart -->
-            <active-users-chart />
+            <active-users-chart :graph-data="barGraphData"/>
           </div>
         </div>
       </div>
       <div class="col-lg-7">
         <!-- line chart -->
         <div class="card z-index-2">
-          <gradient-line-chart />
+          <gradient-line-chart :graph-data="graphData"/>
         </div>
-      </div>
-    </div>
-    <div class="row my-4">
-      <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
-        <projects-card />
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <Orders-card />
       </div>
     </div>
   </div>
@@ -172,10 +164,7 @@ import ActiveUsersChart from "@/examples/Charts/ActiveUsersChart.vue";
 import GradientLineChart from "@/examples/Charts/GradientLineChart.vue";
 import OrdersCard from "./components/OrdersCard.vue";
 import ProjectsCard from "./components/ProjectsCard.vue";
-import US from "../assets/img/icons/flags/US.png";
-import DE from "../assets/img/icons/flags/DE.png";
-import GB from "../assets/img/icons/flags/GB.png";
-import BR from "../assets/img/icons/flags/BR.png";
+
 import axios from "axios";
 
 export default {
@@ -187,6 +176,17 @@ export default {
     ProjectsCard,
     OrdersCard,
   },
+  computed: {
+      graphDataActive() {
+          const monthlySales = Array(12).fill(0);
+          this.graphData.forEach(entry => {
+              if(entry?.count && entry?.month) {
+                  monthlySales[entry.month - 1] = entry.count;
+              }
+          });
+          return monthlySales
+      }
+  },
   data() {
     return {
         projects : [],
@@ -194,7 +194,9 @@ export default {
         fin_cnt: 0,
         partner_cnt: 0,
         project_cnt : 0,
-        total_budget: 0
+        total_budget: 0,
+        graphData: [],
+        barGraphData: [],
     };
   },
 
@@ -215,10 +217,13 @@ export default {
         });
         if (statistics.data.data) {
             let statisticsData = statistics.data.data
+
             this.client_cnt = statisticsData?.client_cnt
             this.partner_cnt = statisticsData?.partner_cnt
             this.project_cnt = statisticsData?.project_cnt
             this.fin_cnt = statisticsData?.fin_cnt
+            this.graphData = statisticsData?.monthly_sales
+            this.barGraphData = statisticsData?.monthly_reg
         }
     }
 };
