@@ -26,7 +26,7 @@ class Company(models.Model):
     name = models.CharField(max_length=255)
     role = models.CharField(max_length=7, choices=ROLES)
     email = models.EmailField()
-    phone = models.CharField(max_length=15)
+    phone = models.CharField(max_length=25)
     address = models.CharField(max_length=255)
 
 

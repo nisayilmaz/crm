@@ -14,12 +14,7 @@
 
 .oblique {
   transform: $header-oblique-transform;
-  overflow: $header-oblique-overflow;
+  overflow: visible;
   width: $header-oblique-img-width;
   right: $header-oblique-img-right;
-  border-bottom-left-radius: $border-radius-lg;
-
-  .oblique-image {
-    transform: $header-oblique-img-transform;
-  }
 }

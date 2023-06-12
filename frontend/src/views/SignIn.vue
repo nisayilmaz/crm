@@ -42,12 +42,17 @@
               </div>
             </div>
             <div class="col-md-6">
-              <div class="top-0 oblique position-absolute h-100 d-md-block d-none me-n8">
+              <div class="oblique position-absolute h-100 d-md-block d-none me-n8">
                 <div
                   class="bg-cover oblique-image position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6"
+                  style="background-size: 60% !important;
+                          background-repeat: no-repeat !important;
+                          top: 50% !important;
+                          right: 5vw !important;
+                          left: 0; !important;"
                   :style="{
                     backgroundImage:
-                      `url(${bgImg})`,
+                      `url(${logo})`,
                   }"
                 ></div>
               </div>
@@ -65,6 +70,7 @@ import AppFooter from "@/examples/PageLayout/Footer.vue";
 import VsudInput from "@/components/VsudInput.vue";
 import VsudButton from "@/components/VsudButton.vue";
 import bgImg from "@/assets/img/curved-images/curved9.jpg"
+import logo from "@/assets/img/tr7_logo_big.png"
 import axios from "axios";
 const body = document.getElementsByTagName("body")[0];
 
@@ -79,6 +85,7 @@ export default {
   data() {
     return {
       bgImg,
+      logo,
       username: "",
       password :"",
       error: false
