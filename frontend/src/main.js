@@ -20,7 +20,7 @@ import "./assets/css/nucleo-svg.css";
 import SoftUIDashboard from "./soft-ui-dashboard";
 import axios from "axios";
 import Popper from "vue3-popper";
-import VueApexCharts from "vue3-apexcharts";
+
 
 
 
