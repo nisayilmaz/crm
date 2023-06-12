@@ -66,6 +66,7 @@ import VsudAvatar from "../components/VsudAvatar.vue";
 import ProjectsCard from "./components/ProjectOverviewCard.vue";
 import axios from "axios";
 import ProjectCard from "@/views/components/ProjectCard.vue";
+import Swal from "sweetalert2";
 
 export default {
     name: "ProjectDetail",
@@ -118,7 +119,11 @@ export default {
                     this.notes.join()
                 }
             }catch (err) {
-                alert(err)
+                Swal.fire(
+                    'Hata',
+                    'Not Eklenemedi!',
+                    'error'
+                )
             }
         },
     }

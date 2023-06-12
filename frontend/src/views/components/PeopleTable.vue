@@ -123,6 +123,7 @@
 
   <script>
   import axios from "axios";
+  import Swal from "sweetalert2";
   export default {
     name: "PeopleTable",
     components: {
@@ -186,7 +187,11 @@
             this.people.push(personRes.data.data);
         }
         catch (err) {
-            alert(err)
+            Swal.fire(
+                'Hata',
+                'Kişi Eklenemedi!',
+                'error'
+            )
         }
         this.first_name = "";
         this.last_name = "";

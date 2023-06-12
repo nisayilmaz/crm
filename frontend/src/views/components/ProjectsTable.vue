@@ -288,6 +288,7 @@ import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/default.css';
 import VsudProgress from "@/components/VsudProgress.vue";
 import {th} from "vuetify/locale";
+import Swal from "sweetalert2";
 export default {
   name: "ProjectsTable",
   components: {
@@ -442,7 +443,11 @@ export default {
           this.user = ""
       }
       catch (err) {
-          alert(err)
+          Swal.fire(
+              'Hata',
+              'Fırsat Eklenemedi!',
+              'error'
+          )
       }
 
       this.client = "";

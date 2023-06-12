@@ -89,6 +89,7 @@
 
 <script>
 import axios from "axios";
+import Swal from "sweetalert2";
 export default {
 
   name: "CompaniesTable",
@@ -165,8 +166,11 @@ export default {
           this.address= ""
       }
       catch (error) {
-
-        alert(error)
+          Swal.fire(
+              'Hata',
+              'Kurum Eklenemedi!',
+              'error'
+          )
       }
     },
 

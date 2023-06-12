@@ -143,6 +143,9 @@
     <div class="mt-4 row">
       <div class="mb-4 col-lg-5 mb-lg-0">
         <div class="card z-index-2">
+            <div class="pb-0 card-header">
+                <h6>Kayıt Özeti</h6>
+            </div>
           <div class="p-3 card-body">
             <!-- chart -->
             <active-users-chart :graph-data="barGraphData"/>
