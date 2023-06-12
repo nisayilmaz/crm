@@ -52,7 +52,6 @@ router.beforeEach(async (to, from, next) => {
     const renderApp = () => {
         createApp(App)
         .component("Popper", Popper)
-        .use(VueApexCharts)
         .use(store)
         .use(router)
         .use(SoftUIDashboard)
