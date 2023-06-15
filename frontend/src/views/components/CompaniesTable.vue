@@ -7,14 +7,14 @@
           <h4 class="accordion-header">
             <button class="ps-0 accordion-button collapsed " type="button" data-bs-toggle="collapse"
               data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-              Kurum Ekle
+              {{typeName}} Ekle <i class="fa fa-plus ms-2" aria-hidden="true"></i>
             </button>
           </h4>
           <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body row">
               <div class="col-6">
                   <div class="mb-3">
-                      <label for="name" class="form-label">Kurum İsmi</label>
+                      <label for="name" class="form-label">İsim*</label>
                       <input v-model="name" type="text" class="ps-0 form-control" id="name">
                   </div>
                   <div class="mb-3">
@@ -122,6 +122,14 @@ export default {
               return 'İş Ortakları'
           }
       },
+      typeName() {
+          if(this.type === 'client') {
+              return 'Kurum'
+          }
+          else if(this.type === 'partner') {
+              return 'İş Ortağı'
+          }
+      },
   },
   async created() {
       try {
@@ -176,11 +184,25 @@ export default {
 
     async deleteCompany(e, id) {
       e.preventDefault();
-      await axios.delete(`http://${window.location.hostname}:5000/api/kurumlar/${id}`, {
-          headers: {
-              Authorization : `${localStorage.getItem("accessToken")}`
-          }});
-      this.companies = this.companies.filter(company => company.id !== id);
+        Swal.fire({
+            title: 'Bu kurumu silmek istediğinize emin misiniz?',
+            text: "Bu işlem geri alınamaz ve kurumla ilişkili tüm fırsatlar da silinir.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sil',
+            cancelButtonText:'İptal'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await axios.delete(`http://${window.location.hostname}:5000/api/kurumlar/${id}`, {
+                    headers: {
+                        Authorization : `${localStorage.getItem("accessToken")}`
+                    }});
+                this.companies = this.companies.filter(company => company.id !== id);
+
+            }
+        })
     },
   }
 };

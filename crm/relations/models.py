@@ -59,7 +59,7 @@ class Project(models.Model):
     info = models.TextField(null=True, blank=True)
     count = models.IntegerField()
     client_contact = models.ForeignKey(to=People, related_name="client_contact", on_delete=models.CASCADE, null=True, blank=True)
-    partner_contact = models.ForeignKey(to=People, related_name="partner_contact", on_delete=models.CASCADE)
+    partner_contact = models.ForeignKey(to=People, related_name="partner_contact", on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
     budget = models.FloatField()
     poc_request = models.CharField(max_length=1, choices=POC_REQUEST)

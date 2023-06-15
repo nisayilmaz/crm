@@ -7,7 +7,7 @@
           <h4 class="accordion-header">
             <button class="ps-0 accordion-button collapsed " type="button" data-bs-toggle="collapse"
               data-bs-target="#addProject" aria-expanded="false" aria-controls="flush-collapseOne">
-              Fırsat Ekle
+              Fırsat Ekle <i class="fa fa-plus ms-2" aria-hidden="true"></i>
             </button>
           </h4>
           <div id="addProject" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
@@ -15,7 +15,7 @@
               <form class="row">
                 <div class="col-4">
                   <div class="mb-3">
-                    <label for="client" class="form-label">Son Kullanıcı</label>
+                    <label for="client" class="form-label">Son Kullanıcı*</label>
                     <select v-model="client" class="form-select" id="client" @change="dropdownListener">
                       <option selected>Kurum Seçin</option>
                       <option v-for="client in clients" :id="client.id" :value="client.id">{{ client.name }}</option>
@@ -33,14 +33,14 @@
                     <input v-model="startDate" type="date" class="ps-0 form-control" id="startDate">
                   </div>
                   <div class="mb-3">
-                    <label for="product" class="form-label">Ürün</label>
+                    <label for="product" class="form-label">Ürün*</label>
                     <select v-model="product" class="form-select" id="product">
                       <option selected>Ürün Seçin</option>
                       <option v-for="product in products" :key="product.id" :value="product.id"> {{product.name}} </option>
                     </select>
                   </div>
                   <div class="mb-3">
-                    <label for="count" class="form-label">Adet</label>
+                    <label for="count" class="form-label">Adet*</label>
                     <input v-model="count"  type="text" class="ps-0 form-control" id="count">
                   </div>
                 </div>
@@ -63,7 +63,7 @@
                     </select>
                   </div>
                   <div class="mb-3">
-                    <label for="poc" class="form-label">POC</label>
+                    <label for="poc" class="form-label">POC*</label>
                     <select v-model="poc" class="form-select" id="poc">
                       <option selected></option>
                       <option value="1"> Toplantı Aşaması </option>
@@ -81,7 +81,7 @@
                     <input v-model="endDate" type="date" class="ps-0 form-control" id="endDate">
                   </div>
                     <div class="mb-3">
-                        <label for="probability" class="form-label">Olasılık</label>
+                        <label for="probability" class="form-label">Olasılık*</label>
                         <vue-slider id="probability"
                                     v-model="probability"
                                     :data="probValues"
@@ -95,7 +95,7 @@
                     <input v-model="tenderDate" type="date" class="ps-0 form-control" id="tenderDate">
                   </div>
                   <div class="mb-3">
-                      <label for="budget" class="form-label">Bütçe</label>
+                      <label for="budget" class="form-label">Bütçe*</label>
                       <input v-model="budget" type="text" class="ps-0 form-control" id="budget">
                   </div>
                   <div class="mb-3">
@@ -305,21 +305,21 @@ export default {
       clientEmp: [],
       partnerEmp: [],
       products: [],
-      client: "",
-      partner: "",
-      startDate: "",
-      product: "",
-      poc: "",
-      endDate: "",
-      clientContact: "",
-      partnerContact: "",
-      tenderDate: "",
-      explanation: "",
+      client: null,
+      partner: null,
+      startDate: null,
+      product: null,
+      poc: null,
+      endDate: null,
+      clientContact: null,
+      partnerContact: null,
+      tenderDate: null,
+      explanation: null,
       probability: 0,
-      count : "",
-      budget: "",
+      count : null,
+      budget: null,
       probValues : [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],
-      user:""
+      user:null
     }
   },
   async created() {
@@ -427,20 +427,20 @@ export default {
           });
           this.formatObj(projectsRes.data.data)
           this.projects.push(projectsRes.data.data);
-          this.client = ""
-          this.partner = ""
-          this.startDate = ""
-          this.product = ""
-          this.poc = ""
-          this.endDate = ""
-          this.clientContact = ""
-          this.partnerContact = ""
-          this.tenderDate = ""
-          this.explanation = ""
+          this.client = null
+          this.partner = null
+          this.startDate = null
+          this.product = null
+          this.poc = null
+          this.endDate = null
+          this.clientContact = null
+          this.partnerContact = null
+          this.tenderDate = null
+          this.explanation = null
           this.probability = 0
-          this.count = ""
-          this.budget = ""
-          this.user = ""
+          this.count = null
+          this.budget = null
+          this.user = null
       }
       catch (err) {
           Swal.fire(
@@ -450,8 +450,6 @@ export default {
           )
       }
 
-      this.client = "";
-      this.partner = "";
     },
 
     formatDate(dateInput, format = 'DD.MM.YYYY') {

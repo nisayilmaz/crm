@@ -244,6 +244,7 @@ class NotesApiView(APIView):
             'title': request.data.get('title'),
             'note': request.data.get('note'),
             'project': request.data.get('project'),
+            'category': request.data.get('category')
         }
         serializer = NotesSerializer(data=data)
         if serializer.is_valid():

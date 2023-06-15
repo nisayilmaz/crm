@@ -7,7 +7,7 @@
                     <h4 class="accordion-header">
                         <button class="ps-0 accordion-button collapsed " type="button" data-bs-toggle="collapse"
                                 data-bs-target="#addUser" aria-expanded="false" aria-controls="flush-collapseOne">
-                            Kullanıcı Ekle
+                            Kullanıcı Ekle <i class="fa fa-plus ms-2" aria-hidden="true"></i>
                         </button>
                     </h4>
                     <div id="addUser" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">

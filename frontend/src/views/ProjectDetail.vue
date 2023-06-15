@@ -18,7 +18,7 @@
                                     <h4 class="accordion-header">
                                         <button class="ps-0 accordion-button collapsed " type="button" data-bs-toggle="collapse"
                                                 data-bs-target="#addNote" aria-expanded="false" aria-controls="flush-collapseOne">
-                                            Not Ekle
+                                            Not Ekle <i class="fa fa-plus ms-2" aria-hidden="true"></i>
                                         </button>
                                     </h4>
                                     <div id="addNote" class="accordion-collapse collapse" data-bs-parent="#addNoteAccordion">
@@ -32,6 +32,15 @@
                                                     <div class="mb-3">
                                                         <label for="note" class="form-label">Not</label>
                                                         <input v-model="note" type="text" class="ps-0 form-control" id="note">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="type" class="form-label">Kategori</label>
+                                                        <select v-model="type" class="form-select" id="partner">
+                                                            <option value="1">Arama</option>
+                                                            <option value="2">Yüzyüze Görüşme</option>
+                                                            <option value="3">İş Ortağı İle Görüşme</option>
+                                                            <option value="4">E-posta</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </form>
@@ -83,7 +92,8 @@ export default {
             project : {},
             notes: [],
             note: "",
-            title:""
+            title:"",
+            type: ""
         };
     },
     async created() {
@@ -108,7 +118,8 @@ export default {
                 const response = await axios.post(`http://${window.location.hostname}:5000/api/notlar/`, {
                     title: this.title,
                     note: this.note,
-                    project: this.project.id
+                    project: this.project.id,
+                    category: this.type
                 }, {
                     headers: {
                         Authorization: `${localStorage.getItem("accessToken")}`

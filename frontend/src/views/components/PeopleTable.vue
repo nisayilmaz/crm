@@ -6,19 +6,19 @@
           <div class="accordion-item">
             <h4 class="accordion-header">
               <button class="ps-0 accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#addPeople" aria-expanded="false" aria-controls="flush-collapseOne">
-                  Kişi Ekle
+                  Kişi Ekle <i class="fa fa-plus ms-2" aria-hidden="true"></i>
               </button>
             </h4>
             <div id="addPeople" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
               <div class="accordion-body row">
                 <div class="col-6">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Ad</label>
+                        <label for="name" class="form-label">Ad*</label>
                         <input v-model="first_name" type="text" class="ps-0 form-control" id="firstName">
                     </div>
 
                     <div class="mb-3">
-                        <label for="surname" class="form-label">Soyad</label>
+                        <label for="surname" class="form-label">Soyad*</label>
                         <input v-model="last_name" type="text" class="ps-0 form-control" id="lastName">
                     </div>
 
@@ -36,7 +36,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="company" class="form-label">Kurum</label>
+                        <label for="company" class="form-label">Kurum*</label>
                         <select id="client" v-model="company" class="form-select"  >
                             <option selected>Kurum Seçin</option>
                             <option v-for="company in companies" :key="company.id" :value="company.id">{{company.name}}</option>
@@ -201,12 +201,26 @@
       },
       async deletePerson(e, id) {
           e.preventDefault();
-          await axios.delete(`http://${window.location.hostname}:5000/api/kisiler/${id}`, {
-              headers: {
-                  Authorization : `${localStorage.getItem("accessToken")}`
+          Swal.fire({
+              title: 'Bu kişiyi silmek istediğinize emin misiniz?',
+              text: "Bu işlem geri alınamaz ve kişiyle ilişkili tüm fırsatlar da silinir.",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Sil',
+              cancelButtonText:'İptal'
+          }).then(async (result) => {
+              if (result.isConfirmed) {
+                  await axios.delete(`http://${window.location.hostname}:5000/api/kisiler/${id}`, {
+                      headers: {
+                          Authorization : `${localStorage.getItem("accessToken")}`
+                      }
+                  });
+                  this.people = this.people.filter(person => person.id !== id);
               }
-          });
-          this.people = this.people.filter(person => person.id !== id);
+          })
+
       },
       getCompanyName(companyId) {
           if(!Array.isArray(this.companies)) return " "
