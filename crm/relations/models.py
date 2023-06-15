@@ -21,20 +21,28 @@ POC_REQUEST = (
     (8, 'Tamamlandı'),
 )
 
+NOTES_CATEGORIES = (
+    (1, 'Arama'),
+    (2, 'Yüzyüze Görüşme'),
+    (3, 'İş Ortağı İle Görüşme'),
+    (4, 'E-posta'),
+
+)
+
 
 class Company(models.Model):
     name = models.CharField(max_length=255)
     role = models.CharField(max_length=7, choices=ROLES)
-    email = models.EmailField()
-    phone = models.CharField(max_length=25)
-    address = models.CharField(max_length=255)
+    email = models.EmailField(null=True, blank=True)
+    phone = models.CharField(max_length=25, null=True, blank=True)
+    address = models.CharField(max_length=255, null=True, blank=True)
 
 
 class People(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    email = models.EmailField()
-    phone = models.CharField(max_length=15)
+    email = models.EmailField(null=True, blank=True)
+    phone = models.CharField(max_length=25, null=True, blank=True)
     company = models.ForeignKey(to=Company, on_delete=models.CASCADE)
 
 
@@ -44,13 +52,13 @@ class Product(models.Model):
 
 class Project(models.Model):
     client = models.ForeignKey(to=Company, related_name="client", on_delete=models.CASCADE)
-    partner = models.ForeignKey(to=Company, related_name="partner", on_delete=models.CASCADE)
+    partner = models.ForeignKey(to=Company, related_name="partner", on_delete=models.CASCADE, null=True, blank=True)
     registration_date = models.DateField(auto_now=True)
-    exp_end_date = models.DateField()
-    tender_date = models.DateField()
-    info = models.TextField()
+    exp_end_date = models.DateField(null=True, blank=True)
+    tender_date = models.DateField(null=True, blank=True)
+    info = models.TextField(null=True, blank=True)
     count = models.IntegerField()
-    client_contact = models.ForeignKey(to=People, related_name="client_contact", on_delete=models.CASCADE)
+    client_contact = models.ForeignKey(to=People, related_name="client_contact", on_delete=models.CASCADE, null=True, blank=True)
     partner_contact = models.ForeignKey(to=People, related_name="partner_contact", on_delete=models.CASCADE)
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
     budget = models.FloatField()
@@ -64,6 +72,8 @@ class Notes(models.Model):
     note = models.TextField()
     creation_date = models.DateField(auto_now=True)
     project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
+    category = models.CharField(max_length=1, choices=NOTES_CATEGORIES)
+
 
 
 class FinishedProject(models.Model):
@@ -71,7 +81,7 @@ class FinishedProject(models.Model):
     invoice_amount = models.IntegerField()
     end_date = models.DateField(default=datetime.now, blank=True)
     client = models.ForeignKey(to=Company, related_name="finished_client", on_delete=models.CASCADE)
-    partner = models.ForeignKey(to=Company, related_name="finished_partner", on_delete=models.CASCADE)
+    partner = models.ForeignKey(to=Company, related_name="finished_partner", on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
     project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
     budget = models.FloatField()

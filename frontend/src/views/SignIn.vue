@@ -44,12 +44,7 @@
             <div class="col-md-6">
               <div class="oblique position-absolute h-100 d-md-block d-none me-n8">
                 <div
-                  class="bg-cover oblique-image position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6"
-                  style="background-size: 60% !important;
-                          background-repeat: no-repeat !important;
-                          top: 50% !important;
-                          right: 5vw !important;
-                          left: 0; !important;"
+                  class="login-img bg-cover oblique-image position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6"
                   :style="{
                     backgroundImage:
                       `url(${logo})`,
