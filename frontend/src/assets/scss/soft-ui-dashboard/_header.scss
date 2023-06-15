@@ -23,6 +23,13 @@
   left: 0 !important;
   right: 5vw !important;
   background-repeat: no-repeat !important;
+  @media (max-width: 1366px ){
+    background-size: 60%;
+    top: 50% ;
+    right: 10vw !important;
+
+
+  }
   @media (min-width: 1366px ){
     background-size: 60%;
     top: 50% ;

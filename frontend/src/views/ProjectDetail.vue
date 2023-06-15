@@ -9,10 +9,13 @@
             </div>
 
             <div class="mt-4 row">
+
                 <div class="col-12">
                     <div class="mb-4 card">
                         <div class="p-3 pb-0 card-header">
-                            <h6 class="mb-1">Notlar</h6>
+<!--                            <h6 class="mb-1">Notlar</h6>-->
+                            <nav-pill/>
+
                             <div class="accordion accordion-flush" id="addNoteAccordion">
                                 <div class="accordion-item">
                                     <h4 class="accordion-header">
@@ -50,16 +53,31 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="p-3 card-body">
-                            <div class="row">
-                                <div class="mb-4 col-xl-3 col-md-3 mb-xl-0" v-for="note in notes" :key="note.id">
-                                    <projects-card
-                                            :title="note.title"
-                                            :description="note.note"
-                                            :date= "note.creation_date"
-                                    />
-                                </div>
-                            </div>
+                        <div class="card-body pt-4 p-3">
+                            <ul class="list-group">
+                                <li v-for="note in notes" :key="note.id" class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                    <div class="d-flex flex-column">
+                                        <h6 class="mb-3 text-sm">{{note.title}}</h6>
+                                        <span class="mb-2 text-xs">Tarih:
+                                            <span class="text-dark font-weight-bold ms-sm-2">{{note.creation_date}}</span>
+                                        </span>
+                                        <span class="mb-2 text-xs">
+                                              Kategori:
+                                              <span class="text-dark ms-sm-2 font-weight-bold">{{note.category}}</span>
+                                        </span>
+                                        <span class="text-xs">
+                                              Not:
+                                              <span class="text-dark ms-sm-2 font-weight-bold">{{note.note}}</span>
+                                        </span>
+                                    </div>
+                                    <div class="ms-auto text-end">
+                                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;">
+                                            <i class="far fa-trash-alt me-2" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </li>
+
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -76,6 +94,7 @@ import ProjectsCard from "./components/ProjectOverviewCard.vue";
 import axios from "axios";
 import ProjectCard from "@/views/components/ProjectCard.vue";
 import Swal from "sweetalert2";
+import NavPill from "./components/NavPill.vue";
 
 export default {
     name: "ProjectDetail",
@@ -83,7 +102,8 @@ export default {
         VsudSwitch,
         VsudAvatar,
         ProjectsCard,
-        ProjectCard
+        ProjectCard,
+        NavPill
     },
     props: ['id'],
 

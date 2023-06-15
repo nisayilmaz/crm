@@ -6,6 +6,10 @@
                     <h6 class="mb-0">Fırsat Detayı</h6>
                 </div>
                 <div class="col-md-4 text-end">
+                    <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;">
+                        <i @click="this.deleteProject($event,project.id)"
+                            class="far fa-trash-alt me-2" aria-hidden="true"></i>
+                    </a>
                     <a v-if="!edit" href="javascript:;">
                         <i @click="this.clickEdit"
                            class="text-sm fa fa-pencil-square-o text-secondary"
@@ -361,6 +365,10 @@ export default {
         },
         handleFile(event) {
             this.file = event.target.files[0];
+        },
+        async deleteProject(e,id) {
+            e.preventDefault()
+
         },
         async updateProject(e,id) {
             e.preventDefault()

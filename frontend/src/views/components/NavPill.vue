@@ -4,43 +4,43 @@
       <li class="nav-item">
         <a
           class="nav-link mb-0 px-0 py-1 active active"
-          data-bs-toggle="tab"
-          href="../../../examples/pages/account/settings.html"
           role="tab"
           aria-selected="true"
-          >Messages</a
+          >Tüm Notlar</a
         >
       </li>
       <li class="nav-item">
         <a
           class="nav-link mb-0 px-0 py-1"
-          data-bs-toggle="tab"
-          href="../../../examples/pages/account/billing.html"
           role="tab"
           aria-selected="false"
-          >Social</a
+          >Arama</a
         >
       </li>
       <li class="nav-item">
         <a
           class="nav-link mb-0 px-0 py-1"
-          data-bs-toggle="tab"
-          href="../../../examples/pages/account/invoice.html"
           role="tab"
           aria-selected="false"
-          >Notifications</a
+          >Yüzyüze Görüşme</a
         >
       </li>
       <li class="nav-item">
         <a
           class="nav-link mb-0 px-0 py-1"
-          data-bs-toggle="tab"
-          href="../../../examples/pages/account/security.html"
           role="tab"
           aria-selected="false"
-          >Backup</a
+          >İş Ortağı İle Görüşme</a
         >
       </li>
+        <li class="nav-item">
+            <a
+                  class="nav-link mb-0 px-0 py-1"
+                  role="tab"
+                  aria-selected="false"
+            >E-posta</a
+            >
+        </li>
     </ul>
   </div>
 </template>
