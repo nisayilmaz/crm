@@ -519,6 +519,6 @@ export default {
 
 <style lang="scss">
 .projects-table{
-  transition: opacity linear 0.1s;
+  transition: opacity linear 0.07s;
 }
 </style>

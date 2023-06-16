@@ -1,5 +1,5 @@
 <template>
-    <div class="card mb-4">
+    <div class="card mb-4 users-table" :style="mainStyle">
         <div class="card-header pb-0">
             <h6>Kullanıcılar</h6>
             <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -100,6 +100,13 @@ export default {
     components: {
         vsudAlert
     },
+    computed: {
+        mainStyle() {
+            return {
+                opacity: this.loading ? 0 : 1
+            }
+        },
+    },
     data() {
         return {
             companies : [],
@@ -109,9 +116,11 @@ export default {
             role: "",
             email: "",
             password: "",
+            loading : true
         }
     },
     async created() {
+        this.loading = true
         const companiesRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/`,
             {headers: {
                     Authorization : `${localStorage.getItem("accessToken")}`
@@ -129,6 +138,8 @@ export default {
         }
         catch (err) {
         }
+        this.loading = false
+
     },
     methods: {
         async addUser(e) {
@@ -172,3 +183,10 @@ export default {
     },
 };
 </script>
+
+
+<style lang="scss">
+.users-table{
+    transition: opacity linear 0.1s;
+}
+</style>

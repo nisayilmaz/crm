@@ -1,5 +1,5 @@
 <template>
-    <div class="card mb-4">
+    <div class="card mb-4 people-table" :style="mainStyle">
       <div class="card-header pb-0">
         <h6>Kişiler</h6>
         <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -137,10 +137,12 @@
         email : "",
         phone: "",
         company: "",
-        search: ""
+        search: "",
+        loading : true
       }
     },
     async created() {
+        this.loading = true
         const companiesRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/`,
             {headers: {
                     Authorization : `${localStorage.getItem("accessToken")}`
@@ -154,8 +156,14 @@
             }
         });
         this.people = people.data.data;
+        this.loading = false
     },
       computed: {
+        mainStyle() {
+            return {
+                opacity: this.loading ? 0 : 1
+            }
+        },
         filteredData() {
             return this.people.filter(person => {
                 return (person?.first_name + person?.last_name).toString().toLowerCase().includes(this.search.toLowerCase())})
@@ -230,4 +238,9 @@
     }
   };
   </script>
-  
+
+<style lang="scss">
+.people-table{
+  transition: opacity linear 0.1s;
+}
+</style>

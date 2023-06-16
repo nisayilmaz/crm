@@ -6,8 +6,9 @@ import Companies from "@/views/Companies.vue";
 import Partners from "@/views/Partners.vue";
 import People from "@/views/People.vue";
 import Users from "@/views/Users.vue";
-import ProjecctDetail from "@/views/ProjectDetail.vue";
+import ProjectDetail from "@/views/ProjectDetail.vue";
 import FinishedProjects from "@/views/FinishedProjects.vue";
+import CompanyDetail from "@/views/components/CompanyDetail.vue";
 
 const routes = [
   {
@@ -79,7 +80,14 @@ const routes = [
   {
     path: "/firsat/:id",
     name: "bill",
-    component: ProjecctDetail,
+    component: ProjectDetail,
+    props: true
+
+  },
+  {
+    path: "/kurum/:id",
+    name: "CompanyDetail",
+    component: CompanyDetail,
     props: true
 
   },

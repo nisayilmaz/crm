@@ -1,5 +1,5 @@
 <template>
-  <div class="card mb-4">
+  <div class="card mb-4 finished-table" :style="mainStyle">
     <div class="card-header pb-0">
       <h6>Gerçekleşen Fırsatlar</h6>
 
@@ -151,10 +151,12 @@ export default {
       endDate: "",
       count : "",
       budget: "",
-      user:""
+      user:"",
+      loading : true
     }
   },
   async created() {
+    this.loading = true
     const clientsResp = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/client`,{
             headers: {
                 Authorization : `${localStorage.getItem("accessToken")}`
@@ -203,9 +205,14 @@ export default {
     if(usersRes.data.data){
         this.users = usersRes.data.data;
     }
+    this.loading = false
   },
   computed: {
-
+      mainStyle() {
+          return {
+              opacity: this.loading ? 0 : 1
+          }
+      },
       projectDetails() {
         return this.projects.map(project => {
             const client = this.clients.find(c => c.id === project?.client);
@@ -283,3 +290,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.finished-table{
+  transition: opacity linear 0.1s;
+}
+</style>

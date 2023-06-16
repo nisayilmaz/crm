@@ -55,7 +55,8 @@
               <td>
                 <div class="d-flex px-2 py-1">
                   <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0 text-sm"> {{ company.name }}</h6>
+                    <h6 class="mb-0 text-sm">
+                        <router-link :to="{ name: 'CompanyDetail', params: { id: company.id}}" target="_blank">{{ company.name }}</router-link></h6>
                     <!-- <p class="text-xs text-secondary mb-0">{{company.email}}</p> -->
                   </div>
                 </div>
