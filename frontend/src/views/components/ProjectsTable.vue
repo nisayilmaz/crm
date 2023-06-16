@@ -179,14 +179,20 @@
           <tbody>
             <tr v-for="(project, i) in projects" :key="i">
               <td  class="align-middle text-center">
-                <span class="text-xs font-weight-bold">
-                    <router-link :to="{ name: 'CompanyDetail', params: { id: projectDetails[i].client?.id}}" target="_blank">{{ projectDetails[i].client?.name }}</router-link>
+                  <span v-if="projectDetails[i].client" class="text-xs font-weight-bold">
+                    <router-link :to="{ name: 'CompanyDetail', params: { id: projectDetails[i].client.id}}" target="_blank">{{ projectDetails[i].client?.name }}</router-link>
+                    </span>
+                  <span v-else class="text-xs font-weight-bold">
+                      -
                     </span>
 
               </td>
               <td class="align-middle text-center">
-                <span class="text-xs font-weight-bold">
-                    <router-link :to="{ name: 'CompanyDetail', params: { id: projectDetails[i].partner?.id}}" target="_blank">{{ projectDetails[i].partner?.name }}</router-link>
+                <span v-if="projectDetails[i].partner" class="text-xs font-weight-bold">
+                    <router-link :to="{ name: 'CompanyDetail', params: { id: projectDetails[i].partner.id}}" target="_blank">{{ projectDetails[i].partner?.name }}</router-link>
+                    </span>
+                  <span v-else class="text-xs font-weight-bold">
+                      -
                     </span>
               </td>
                 <td class="align-middle text-center">

@@ -128,7 +128,7 @@
     name: "PeopleTable",
     props: {
       company_filter :{
-          type:Number,
+          type:String,
           default:0
       }
     },
@@ -162,7 +162,7 @@
             }
         });
         this.people = people.data.data;
-        if(this.company_filter > 0) {
+        if(this.company_filter !== '0') {
             this.people = this.people.filter(person => person.company === this.company_filter)
         }
         this.loading = false
