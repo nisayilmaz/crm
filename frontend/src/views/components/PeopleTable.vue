@@ -2,7 +2,7 @@
     <div class="card mb-4 people-table" :style="mainStyle">
       <div class="card-header pb-0">
         <h6>Kişiler</h6>
-        <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div v-if="company_filter === '0'" class="accordion accordion-flush" id="accordionFlushExample">
           <div class="accordion-item">
             <h4 class="accordion-header">
               <button class="ps-0 accordion-button collapsed " type="button" data-bs-toggle="collapse" data-bs-target="#addPeople" aria-expanded="false" aria-controls="flush-collapseOne">
@@ -52,7 +52,7 @@
       <div class="card-body px-0 pt-0 pb-2">
           <div class="row">
               <div class="col-3 ms-3">
-                  <input class="ps-0 form-control text-xs" v-model="search">
+                  <input v-if="company_filter === '0'" class="ps-0 form-control text-xs" v-model="search">
               </div>
           </div>
         <div class="table-responsive p-0">
@@ -126,6 +126,12 @@
   import Swal from "sweetalert2";
   export default {
     name: "PeopleTable",
+    props: {
+      company_filter :{
+          type:Number,
+          default:0
+      }
+    },
     components: {
     },
     data() {
@@ -156,6 +162,9 @@
             }
         });
         this.people = people.data.data;
+        if(this.company_filter > 0) {
+            this.people = this.people.filter(person => person.company === this.company_filter)
+        }
         this.loading = false
     },
       computed: {

@@ -2,7 +2,7 @@
   <div class="card mb-4 projects-table" :style="mainStyle">
     <div class="card-header pb-0">
       <h6>Fırsatlar</h6>
-      <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div v-if="this.filter === 0" class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h4 class="accordion-header">
             <button class="ps-0 accordion-button collapsed " type="button" data-bs-toggle="collapse"
@@ -179,12 +179,15 @@
           <tbody>
             <tr v-for="(project, i) in projects" :key="i">
               <td  class="align-middle text-center">
-                <span class="text-xs font-weight-bold">{{ projectDetails[i].client?.name }}</span>
+                <span class="text-xs font-weight-bold">
+                    <router-link :to="{ name: 'CompanyDetail', params: { id: projectDetails[i].client?.id}}" target="_blank">{{ projectDetails[i].client?.name }}</router-link>
+                    </span>
 
               </td>
               <td class="align-middle text-center">
-                <span class="text-xs font-weight-bold">{{ projectDetails[i].partner?.name }}</span>
-
+                <span class="text-xs font-weight-bold">
+                    <router-link :to="{ name: 'CompanyDetail', params: { id: projectDetails[i].partner?.id}}" target="_blank">{{ projectDetails[i].partner?.name }}</router-link>
+                    </span>
               </td>
                 <td class="align-middle text-center">
                     <span  class="text-xs font-weight-bold">{{ projectDetails[i].user?.first_name }} {{ projectDetails[i].user?.last_name }}</span>
@@ -291,11 +294,18 @@ import 'vue-slider-component/theme/default.css';
 import VsudProgress from "@/components/VsudProgress.vue";
 import {th} from "vuetify/locale";
 import Swal from "sweetalert2";
+import projects from "@/views/Projects.vue";
 export default {
   name: "ProjectsTable",
   components: {
       VsudProgress,
       VueSlider
+  },
+  props: {
+      filter : {
+          type: Number,
+          default : 0
+      }
   },
   data() {
     return {
@@ -360,6 +370,9 @@ export default {
         this.projects = projectsRes.data.data;
         this.formatObj(this.projects);
         this.projects = this.projects.filter(project => project.poc_request !== 'Gerçekleşti');
+        if (this.filter > 0) {
+            this.projects = this.projects.filter(project => project.client === this.filter || project.partner === this.filter)
+        }
 
     }
     const peopleResp =  await axios.get(`http://${window.location.hostname}:5000/api/kisiler`, {

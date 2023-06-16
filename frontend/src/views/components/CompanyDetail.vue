@@ -31,23 +31,25 @@
             <ul class="list-group">
                 <li class="pt-0 text-sm border-0 list-group-item ps-0">
                     <strong class="text-dark">Adres:</strong>&nbsp;
-                    <span v-if="company.address !== '' ">{{ company.address }}</span>
+                    <span v-if="company?.address !== '' ">{{ company?.address }}</span>
                     <span v-else>-</span>
                 </li>
                 <li class="text-sm border-0 list-group-item ps-0">
                     <strong class="text-dark">Telefon:</strong>&nbsp;
-                    <span v-if="company.phone !== '' ">{{ company.phone }}</span>
+                    <span v-if="company?.phone !== '' ">{{ company?.phone }}</span>
                     <span v-else>-</span>
                 </li>
                 <li class="text-sm border-0 list-group-item ps-0">
                     <strong class="text-dark">Email:</strong>&nbsp;
-                    <span v-if="company.email !== '' "> {{ company.email }}</span>
+                    <span v-if="company?.email !== '' "> {{ company?.email }}</span>
                     <span v-else>-</span>
                 </li>
             </ul>
         </div>
-
     </div>
+    <people-table class="mt-3" :company_filter="company?.id"/>
+    <projects-table class="mt-3" :filter="company?.id"/>
+
 </template>
 
 <script>
@@ -57,11 +59,15 @@ import moment from "moment/moment";
 import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/default.css';
 import Swal from 'sweetalert2'
+import PeopleTable from "@/views/components/PeopleTable.vue";
+import ProjectsTable from "@/views/components/ProjectsTable.vue";
 
 export default {
     name: "ProjectCard",
     components: {
-        VueSlider
+        VueSlider,
+        PeopleTable,
+        ProjectsTable
     },
     props: ['id'],
 
