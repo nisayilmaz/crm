@@ -1,8 +1,13 @@
+<style>
+  a {
+      cursor: pointer;
+  }
+</style>
 <template>
   <div class="nav-wrapper position-relative end-0">
     <ul class="nav nav-pills nav-fill p-1" role="tablist">
       <li class="nav-item">
-        <a
+        <a @click="setFilter(0)"
           class="nav-link mb-0 px-0 py-1 active active"
           role="tab"
           aria-selected="true"
@@ -10,7 +15,7 @@
         >
       </li>
       <li class="nav-item">
-        <a
+        <a @click="setFilter(1)"
           class="nav-link mb-0 px-0 py-1"
           role="tab"
           aria-selected="false"
@@ -18,7 +23,7 @@
         >
       </li>
       <li class="nav-item">
-        <a
+        <a @click="setFilter(2)"
           class="nav-link mb-0 px-0 py-1"
           role="tab"
           aria-selected="false"
@@ -26,7 +31,7 @@
         >
       </li>
       <li class="nav-item">
-        <a
+        <a @click="setFilter(3)"
           class="nav-link mb-0 px-0 py-1"
           role="tab"
           aria-selected="false"
@@ -34,7 +39,7 @@
         >
       </li>
         <li class="nav-item">
-            <a
+            <a @click="setFilter(4)"
                   class="nav-link mb-0 px-0 py-1"
                   role="tab"
                   aria-selected="false"
@@ -44,7 +49,6 @@
     </ul>
   </div>
 </template>
-
 <script>
 import setNavPills from "@/assets/js/nav-pills.js";
 
@@ -53,5 +57,10 @@ export default {
   mounted() {
     setNavPills();
   },
+  methods: {
+      setFilter(filter) {
+          this.$emit('variable-changed', filter);
+      }
+  }
 };
 </script>

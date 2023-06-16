@@ -14,7 +14,7 @@
                     <div class="mb-4 card">
                         <div class="p-3 pb-0 card-header">
 <!--                            <h6 class="mb-1">Notlar</h6>-->
-                            <nav-pill/>
+                            <nav-pill @variable-changed="handleFilter"/>
 
                             <div class="accordion accordion-flush" id="addNoteAccordion">
                                 <div class="accordion-item">
@@ -55,15 +55,15 @@
                         </div>
                         <div class="card-body pt-4 p-3">
                             <ul class="list-group">
-                                <li v-for="note in notes" :key="note.id" class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                <li v-for="note in filteredNotes" :key="note.id" class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                                     <div class="d-flex flex-column">
                                         <h6 class="mb-3 text-sm">{{note.title}}</h6>
                                         <span class="mb-2 text-xs">Tarih:
-                                            <span class="text-dark font-weight-bold ms-sm-2">{{note.creation_date}}</span>
+                                            <span class="text-dark font-weight-bold ms-sm-2">{{formatDate(note.creation_date)}}</span>
                                         </span>
                                         <span class="mb-2 text-xs">
                                               Kategori:
-                                              <span class="text-dark ms-sm-2 font-weight-bold">{{note.category}}</span>
+                                              <span class="text-dark ms-sm-2 font-weight-bold">{{formatCategory(note.category)}}</span>
                                         </span>
                                         <span class="text-xs">
                                               Not:
@@ -95,6 +95,7 @@ import axios from "axios";
 import ProjectCard from "@/views/components/ProjectCard.vue";
 import Swal from "sweetalert2";
 import NavPill from "./components/NavPill.vue";
+import moment from "moment";
 
 export default {
     name: "ProjectDetail",
@@ -111,6 +112,7 @@ export default {
         return {
             project : {},
             notes: [],
+            filteredNotes: [],
             note: "",
             title:"",
             type: ""
@@ -130,8 +132,25 @@ export default {
             }
         });
         this.notes = notesRes.data.data
+        this.filteredNotes = notesRes.data.data
     },
     methods : {
+        handleFilter(newFilter){
+            if(newFilter === 0) {
+                this.filteredNotes = this.notes
+            }
+            else {
+                this.filteredNotes = this.notes.filter(note => note.category === newFilter)
+
+            }
+        },
+        formatDate(date, format = "DD.MM.YYYY") {
+            return moment(date).format(format)
+        },
+        formatCategory(category) {
+            const categories = ["","Arama", "Yüzyüze Görüşme", "İş Ortağı İle Görüşme", "E-posta"]
+            return categories[category]
+        },
         async addNote(e) {
             e.preventDefault()
             try {
