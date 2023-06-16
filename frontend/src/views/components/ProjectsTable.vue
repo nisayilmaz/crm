@@ -1,5 +1,5 @@
 <template>
-  <div class="card mb-4">
+  <div class="card mb-4 projects-table" :style="mainStyle">
     <div class="card-header pb-0">
       <h6>Fırsatlar</h6>
       <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -73,7 +73,9 @@
                       <option value="5"> Yaklaşık Maliyet </option>
                       <option value="6"> Alım Aşaması </option>
                       <option value="7"> Pazarlık Aşaması </option>
-                      <option value="8"> Tamamlandı </option>
+                      <option value="8"> Gerçekleşti </option>
+                      <option value="9"> Kapandı </option>
+                      <option value="10"> Kaybedildi </option>
                     </select>
                   </div>
                   <div class="mb-3">
@@ -319,10 +321,12 @@ export default {
       count : null,
       budget: null,
       probValues : [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],
-      user:null
+      user:null,
+      loading:true
     }
   },
   async created() {
+    this.loading = true
     const clientsResp = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/client`,{
             headers: {
                 Authorization : `${localStorage.getItem("accessToken")}`
@@ -355,7 +359,7 @@ export default {
     if(projectsRes) {
         this.projects = projectsRes.data.data;
         this.formatObj(this.projects);
-        this.projects = this.projects.filter(project => project.poc_request !== 'Tamamlandı');
+        this.projects = this.projects.filter(project => project.poc_request !== 'Gerçekleşti');
 
     }
     const peopleResp =  await axios.get(`http://${window.location.hostname}:5000/api/kisiler`, {
@@ -373,9 +377,15 @@ export default {
     if(usersRes.data.data){
         this.users = usersRes.data.data;
     }
+    this.loading = false
+
   },
   computed: {
-
+    mainStyle() {
+        return {
+            opacity: this.loading ? 0 : 1
+        }
+    },
     clientEmployees() {
       if (!Array.isArray(this.people)) return []
       return this.people.filter(person => person.company === this.client)
@@ -457,7 +467,7 @@ export default {
     },
 
     formatPoc(poc) {
-      let options = { 1: "Toplantı Aşaması", 2: "POC Talebi",3: "POC Aşaması", 4: "POC Gerçekleştirildi",5: "Yaklaşık Maliyet", 6: "Alım Aşaması",7: "Pazarlık Aşaması", 8: "Tamamlandı", }
+      let options = { 1: "Toplantı Aşaması", 2: "POC Talebi",3: "POC Aşaması", 4: "POC Gerçekleştirildi",5: "Yaklaşık Maliyet", 6: "Alım Aşaması",7: "Pazarlık Aşaması", 8: "Gerçekleşti", }
       poc = options[poc]
       return poc
     },
@@ -506,3 +516,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.projects-table{
+  transition: opacity linear 0.1s;
+}
+</style>

@@ -28,24 +28,28 @@
       <li class="nav-item">
         <sidenav-collapse nav-text="Kişiler" :to="{ name: 'People' }">
           <template #icon>
-            <icon name="tables" />
+            <icon name="customer-support" />
           </template>
         </sidenav-collapse>
       </li>
       <li class="nav-item">
         <sidenav-collapse nav-text="Fırsatlar" :to="{ name: 'Projects' }">
           <template #icon>
-            <icon name="tables" />
+            <icon name="document" />
           </template>
         </sidenav-collapse>
       </li>
         <li class="nav-item">
-
+            <sidenav-collapse nav-text="Gerçekleşen Fırsatlar" :to="{ name: 'FinishedProjects' }">
+                <template #icon>
+                    <icon name="document" />
+                </template>
+            </sidenav-collapse>
         </li>
         <li v-if="store.state.role === 1" class="nav-item">
         <sidenav-collapse nav-text="Kullanıcılar" :to="{ name: 'Users' }">
           <template #icon>
-            <icon name="tables" />
+            <icon name="customer-support" />
           </template>
         </sidenav-collapse>
       </li>

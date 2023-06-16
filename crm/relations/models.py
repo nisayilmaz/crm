@@ -18,7 +18,9 @@ POC_REQUEST = (
     (5, 'Yaklaşık Maliyet'),
     (6, 'Alım Aşaması'),
     (7, 'Pazarlık Aşaması'),
-    (8, 'Tamamlandı'),
+    (8, 'Gerçekleşti'),
+    (9, 'Kapandı'),
+    (10, 'Kaybedildi')
 )
 
 NOTES_CATEGORIES = (

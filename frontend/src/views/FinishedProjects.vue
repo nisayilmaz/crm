@@ -2,7 +2,7 @@
     <div class="py-4 container-fluid">
       <div class="row">
         <div class="col-12">
-          <projects-table />
+          <finished-projects-table />
         </div>
       </div>
     </div>
@@ -10,11 +10,12 @@
   
   <script>
   import ProjectsTable from "./components/ProjectsTable.vue";
-
+  import FinishedProjectsTable from "@/views/components/FinishedProjectsTable.vue";
+  
   export default {
     name: "ProjectsPage",
     components: {
-      ProjectsTable,
+      FinishedProjectsTable
     },
   };
   </script>

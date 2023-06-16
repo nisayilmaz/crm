@@ -7,6 +7,7 @@ import Partners from "@/views/Partners.vue";
 import People from "@/views/People.vue";
 import Users from "@/views/Users.vue";
 import ProjecctDetail from "@/views/ProjectDetail.vue";
+import FinishedProjects from "@/views/FinishedProjects.vue";
 
 const routes = [
   {
@@ -42,6 +43,14 @@ const routes = [
     path: "/firsatlar",
     name: "Projects",
     component: Projects,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/gerceklesen-firsatlar",
+    name: "FinishedProjects",
+    component: FinishedProjects,
     meta: {
       requiresAuth: true
     }

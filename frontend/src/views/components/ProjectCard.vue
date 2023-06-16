@@ -145,7 +145,9 @@
                             <option value="5"> Yaklaşık Maliyet </option>
                             <option value="6"> Alım Aşaması </option>
                             <option value="7"> Pazarlık Aşaması </option>
-                            <option value="8"> Tamamlandı </option>
+                            <option value="8"> Gerçekleşti </option>
+                            <option value="9"> Kapandı </option>
+                            <option value="10"> Kaybedildi </option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -325,7 +327,9 @@ export default {
                 5: "Yaklaşık Maliyet",
                 6: "Alım Aşaması",
                 7: "Pazarlık Aşaması",
-                8: "Tamamlandı",
+                8: "Gerçekleşti",
+                9: "Kapandı",
+                10: "Kaybedildi"
             }
             return options[poc]
         },
