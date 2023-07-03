@@ -55,8 +55,8 @@ class CompanyByRoleList(APIView):
 
 
 class CompanyApiDetailView(APIView):
-    authentication_classes = [KnoxTokenAuthentication]
-    permission_classes = (permissions.IsAuthenticated,)
+    # authentication_classes = [KnoxTokenAuthentication]
+    # permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, pk):
         try:
@@ -73,6 +73,31 @@ class CompanyApiDetailView(APIView):
             return Response({'status': 'success', 'data': []}, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'status': 'failed', 'data': []}, status=status.HTTP_204_NO_CONTENT)
+
+    def put(self, request, pk):
+        instance = Company.objects.get(pk=pk)
+        if not instance:
+            return Response(
+                {"res": "Object with id does not exists"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        data = {
+            'name': request.data.get('name', None),
+            'email': request.data.get('email', None),
+            'phone': request.data.get('phone', None),
+            'address': request.data.get('address', None),
+
+        }
+        non_empty_data = {}
+        for key, value in data.items():
+            if value:
+                non_empty_data[key] = value
+        serializer = CompanySerializer(instance=instance, data=non_empty_data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PeopleApiView(APIView):
