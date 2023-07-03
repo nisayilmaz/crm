@@ -2,7 +2,7 @@
   <div class="card mb-4 projects-table" :style="mainStyle">
     <div class="card-header pb-0">
       <h6>Fırsatlar</h6>
-      <div v-if="this.filter === 0" class="accordion accordion-flush" id="accordionFlushExample">
+      <div v-if="this.filter === '0'" class="accordion accordion-flush" id="accordionFlushExample">
         <div class="accordion-item">
           <h4 class="accordion-header">
             <button class="ps-0 accordion-button collapsed " type="button" data-bs-toggle="collapse"
@@ -309,7 +309,7 @@ export default {
   },
   props: {
       filter : {
-          type: Number,
+          type: String,
           default : 0
       }
   },
@@ -376,7 +376,7 @@ export default {
         this.projects = projectsRes.data.data;
         this.formatObj(this.projects);
         this.projects = this.projects.filter(project => project.poc_request !== 'Gerçekleşti');
-        if (this.filter > 0) {
+        if (this.filter !== "0") {
             this.projects = this.projects.filter(project => project.client === this.filter || project.partner === this.filter)
         }
 
