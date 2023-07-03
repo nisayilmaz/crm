@@ -71,7 +71,7 @@
                                         </span>
                                     </div>
                                     <div class="ms-auto text-end">
-                                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;">
+                                        <a @click="deleteNote($event ,note.id)" class="btn btn-link text-danger text-gradient px-3 mb-0" >
                                             <i class="far fa-trash-alt me-2" aria-hidden="true"></i>
                                         </a>
                                     </div>
@@ -144,7 +144,32 @@ export default {
 
             }
         },
+        deleteNote(e,noteId) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Bu notu silmek istediğinize emin misiniz?',
+                text: "",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sil',
+                cancelButtonText:'İptal'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    await axios.delete(`http://${window.location.hostname}:5000/api/notlar/${noteId}`, {
+                        headers: {
+                            Authorization : `${localStorage.getItem("accessToken")}`
+                        }});
+                    this.filteredNotes = this.filteredNotes.filter(note => note.id !== noteId);
+
+                }
+            })
+        },
         formatDate(date, format = "DD.MM.YYYY") {
+            if(date === null) {
+                return null
+            }
             return moment(date).format(format)
         },
         formatCategory(category) {
@@ -167,6 +192,15 @@ export default {
                 if(response.data.data){
                     this.notes.splice(0, 0, response.data.data);
                     this.notes.join()
+                    Swal.fire(
+                        'Not Başarıyla Eklendi',
+                        '',
+                        'success'
+                    )
+
+                    this.title = ""
+                    this.note = ""
+                    this.type = ""
                 }
             }catch (err) {
                 Swal.fire(

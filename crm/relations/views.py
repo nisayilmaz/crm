@@ -254,8 +254,8 @@ class NotesApiView(APIView):
 
 
 class NotesApiDetailView(APIView):
-    authentication_classes = [KnoxTokenAuthentication]
-    permission_classes = (permissions.IsAuthenticated,)
+    # authentication_classes = [KnoxTokenAuthentication]
+    # permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, pk, *args, **kwargs):
         notes = Notes.objects.filter(project=pk)
@@ -263,10 +263,18 @@ class NotesApiDetailView(APIView):
         serializer = NotesSerializer(notes, many=True)
         return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
 
+    def delete(self, request, pk):
+        try:
+            note = Notes.objects.get(pk=pk)
+            note.delete()
+            return Response({'status': 'success', 'data': []}, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({'status': 'failed', 'data': []}, status=status.HTTP_204_NO_CONTENT)
+
 
 class Statistics(APIView):
-    # authentication_classes = [KnoxTokenAuthentication]
-    # permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = [KnoxTokenAuthentication]
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         companies = Company.objects

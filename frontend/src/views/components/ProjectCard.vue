@@ -316,6 +316,9 @@ export default {
     },
     methods: {
         formatDate(dateInput, format = 'DD.MM.YYYY') {
+            if(dateInput === null) {
+                return null
+            }
             return moment(dateInput).format(format)
         },
         formatPoc(poc) {
