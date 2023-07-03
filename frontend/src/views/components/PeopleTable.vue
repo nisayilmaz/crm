@@ -175,7 +175,7 @@
         },
         filteredData() {
             return this.people.filter(person => {
-                return (person?.first_name + person?.last_name).toString().toLowerCase().includes(this.search.toLowerCase())})
+                return (person?.first_name + person?.last_name + this.getCompanyName(person?.company)).toString().toLowerCase().includes(this.search.toLowerCase())})
         }
       },
     methods: {
