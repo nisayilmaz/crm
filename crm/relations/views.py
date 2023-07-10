@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
 from rest_framework import permissions
-from .models import Company, People, Project, FinishedProject
+from .models import Company, People, Project, FinishedProject, FileModel
 from .serializers import *
 from knox.auth import TokenAuthentication as KnoxTokenAuthentication
 from knox.models import AuthToken
@@ -375,26 +375,39 @@ class FinishedProjectApiView(APIView):
             'budget': request.data.get('budget'),
             'invoice_date': request.data.get('invoice_date'),
             'invoice_amount': request.data.get('invoice_amount'),
-            'agreement': request.FILES.get('file', None),
             'end_date': request.data.get('end_date'),
             'project': request.data.get('project'),
             'registered_by': request.data.get('registered_by'),
         }
         serializer = FinishedProjectSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            project = serializer.save()
+            files = request.FILES.getlist('files')
+
+            for file in files:
+                file_instance = FileModel(project=project, file=file)
+                # Save each file instance
+                file_instance.save()
+
             return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_201_CREATED)
 
         return Response({'status': 'failed', 'data': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class FilesView(APIView):
+    def get(self, request):
+        files = FileModel.objects.all()
+        serializer = FileSerializer(files, many=True)
+        return Response({'status': 'success', 'data': serializer.data}, status=status.HTTP_200_OK)
+
+
 def download(request, pk):
-    proj = FinishedProject.objects.get(pk=pk)
-    file_handle = proj.agreement.open()
+    fileObj = FileModel.objects.get(pk=pk)
+    file_handle = fileObj.file.open()
     file_name = os.path.basename(str(file_handle))
     # send file
     response = FileResponse(file_handle, content_type='application/pdf')
     response['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, responseType, Content-Disposition'
     response['Content-Disposition'] = 'attachment; filename="' + file_name + '"'
-    response['Content-Length'] = proj.agreement.size
+    response['Content-Length'] = fileObj.file.size
     return response

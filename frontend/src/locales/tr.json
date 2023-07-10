@@ -1,0 +1,9 @@
+{
+  "welcome": "Hoş Geldiniz",
+  "login_desc": "Email ve şifre ile giriş yapınız.",
+  "email_lbl" : "Email",
+  "password_lbl": "Şifre",
+  "login" : "Giriş Yap",
+  "reg_sum": "Kayıt Özeti"
+
+}

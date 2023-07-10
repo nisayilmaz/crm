@@ -43,7 +43,7 @@
               </th>
 
                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                    Sözleşme
+                    Dosyalar
                 </th>
                 <th></th>
             </tr>
@@ -90,7 +90,7 @@
               </td>
 
                 <td class="align-middle text-center">
-                    <a style="cursor: pointer" @click="download(project.id)" class="text-xs font-weight-bold">Sözleşme İndir</a>
+                    <a style="cursor: pointer" @click="download(project.id)" class="text-xs font-weight-bold">Dosya İndir</a>
                 </td>
 
 <!--                <td class="align-middle text-center">-->

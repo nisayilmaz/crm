@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Company, People, Product, Project, Notes, FinishedProject
+from .models import Company, People, Product, Project, Notes, FinishedProject, FileModel
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -17,6 +17,12 @@ class PeopleSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
+        fields = '__all__'
+
+
+class FileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FileModel
         fields = '__all__'
 
 

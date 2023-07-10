@@ -77,7 +77,7 @@
             </ul>
         </div>
         <div v-if="edit" class="p-3 card-body">
-            <form class="row">
+            <form class="row" enctype="multipart/form-data">
                 <div class="col-4">
                     <div class="mb-3">
                         <label for="client" class="form-label">Son Kullanıcı</label>
@@ -177,8 +177,8 @@
                         <input v-model="explanation" type="text" class="ps-0 form-control" id="explanation">
                     </div>
                     <div v-if="poc === '8' || poc === 8" class="mb-3">
-                        <label for="file" class="form-label">Sözleşme</label>
-                        <input type="file" class="ps-0 form-control" @change="handleFile" id="file">
+                        <label for="file" class="form-label">Dosyalar</label>
+                        <input type="file" class="ps-0 form-control" @change="handleFile" id="file" multiple>
                     </div>
 
                     <div v-if="poc === '8' || poc === 8" class="mb-3">
@@ -229,14 +229,14 @@ export default {
             products: [],
             people: [],
             users: [],
-            client: "",
-            partner: "",
+            client: null,
+            partner: null,
             startDate: "",
-            product: "",
+            product: null,
             poc: "",
             endDate: "",
-            clientContact: "",
-            partnerContact: "",
+            clientContact: null,
+            partnerContact: null,
             tenderDate: "",
             explanation: "",
             probability: 0,
@@ -247,7 +247,7 @@ export default {
             edit: false,
             note: "",
             title: "",
-            file: null,
+            files: null,
             finDate: "",
             invoiceDate: "",
             invoiceAmount: ""
@@ -356,22 +356,22 @@ export default {
         cancelEdit() {
             this.edit = false
             this.client = ""
-            this.partner = ""
+            this.partner = null
             this.tenderDate = ""
             this.startDate = ""
-            this.product = ""
+            this.product = null
             this.poc = ""
             this.endDate = ""
             this.explanation = ""
             this.probability =  ""
-            this.clientContact =  ""
-            this.partnerContact = ""
+            this.clientContact =  null
+            this.partnerContact = null
             this.count = ""
             this.budget = ""
             this.user = ""
         },
         handleFile(event) {
-            this.file = event.target.files[0];
+            this.files = event.target.files;
         },
         async deleteProject(e,id) {
             e.preventDefault()
@@ -382,7 +382,10 @@ export default {
             try {
                 if (this.poc === 8 || this.poc === "8") {
                     const formData = new FormData();
-                    formData.append('file', this.file);
+                    for (let i = 0; i < this.files.length; i++) {
+                        formData.append('files', this.files[i]);
+                    }
+
                     formData.append('client', this.client);
                     formData.append('partner', this.partner);
                     formData.append('count', this.count);

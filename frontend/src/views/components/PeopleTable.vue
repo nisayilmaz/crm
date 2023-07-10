@@ -144,7 +144,8 @@
         phone: "",
         company: "",
         search: "",
-        loading : true
+        loading : true,
+        filter: parseInt(this.company_filter)
       }
     },
     async created() {
@@ -163,7 +164,7 @@
         });
         this.people = people.data.data;
         if(this.company_filter !== '0') {
-            this.people = this.people.filter(person => person.company === this.company_filter)
+            this.people = this.people.filter(person => person.company === parseInt(this.company_filter))
         }
         this.loading = false
     },

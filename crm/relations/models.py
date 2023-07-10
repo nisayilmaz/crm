@@ -88,7 +88,8 @@ class FinishedProject(models.Model):
     project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
     budget = models.FloatField()
     count = models.IntegerField()
-    agreement = models.FileField(upload_to='sözlesmeler/', null=True, blank=True)
     registered_by = models.ForeignKey(to=CustomUser, on_delete=models.PROTECT)
 
-
+class FileModel(models.Model):
+    project = models.ForeignKey(FinishedProject, on_delete=models.CASCADE, related_name='files')
+    file = models.FileField(upload_to='sozlesmeler/', null=True, blank=True)

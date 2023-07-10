@@ -75,8 +75,8 @@
                         </div>
                     </div>
                 </div>
-                    <people-table class="mt-3" :company_filter="company?.id.toString()"/>
-                    <projects-table class="mt-3" :filter="company?.id"/>
+                    <people-table class="mt-3" :company_filter="company?.id ? company.id.toString() : '0'"/>
+                    <projects-table class="mt-3" :filter="company?.id ? company.id.toString() : '0'"/>
 
                 </div>
             </div>

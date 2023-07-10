@@ -43,7 +43,7 @@
               </th>
 
                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                    Sözleşme
+                    Dosyalar
                 </th>
                 <th></th>
             </tr>
@@ -90,7 +90,8 @@
               </td>
 
                 <td class="align-middle text-center">
-                    <a style="cursor: pointer" @click="download(project.id)" class="text-xs font-weight-bold">Sözleşme İndir</a>
+
+                    <a v-for="file in projectDetails[i]?.projFiles " style="cursor: pointer" @click="download(file.id)" class="text-xs font-weight-bold">{{formatFile(file.file)}}<br></a>
                 </td>
 
 <!--                <td class="align-middle text-center">-->
@@ -152,7 +153,8 @@ export default {
       count : "",
       budget: "",
       user:"",
-      loading : true
+      loading : true,
+      files: null
     }
   },
   async created() {
@@ -205,6 +207,15 @@ export default {
     if(usersRes.data.data){
         this.users = usersRes.data.data;
     }
+
+    const filesRes = await axios.get(`http://${window.location.hostname}:5000/api/dosyalar`,{
+        headers: {
+            Authorization : `${localStorage.getItem("accessToken")}`
+        }
+    });
+    if(filesRes.data.data){
+        this.files = filesRes.data.data;
+    }
     this.loading = false
   },
   computed: {
@@ -219,8 +230,12 @@ export default {
             const partner = this.partners.find(c => c.id === project?.partner);
             const product = this.products.find(prod => prod.id === project?.product);
             const manager = this.users.find(user => user.id === project?.registered_by)
+            let projFiles = null
+            if(this.files !== null) {
+                projFiles = this.files.filter(file => file?.project === project?.id || !project?.id)
 
-            return { client, partner, product, project,manager };
+            }
+            return { client, partner, product, project,manager, projFiles };
         });
       }
   },
@@ -253,6 +268,10 @@ export default {
           document.body.removeChild(link);
           window.URL.revokeObjectURL(url);
         },
+     formatFile(file) {
+         if (file.match(/\/sozlesmeler\/(.+)/)[1])
+          return file.match(/\/sozlesmeler\/(.+)/)[1]
+     },
     formatObj(projList) {
        if(Array.isArray(projList)){
            for (const project of projList) {

@@ -13,6 +13,7 @@ dist
 dist-ssr
 *.local
 media
+todo.txt
 __pycache__
 migrations/
 # Editor directories and files

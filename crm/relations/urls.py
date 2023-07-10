@@ -15,5 +15,6 @@ urlpatterns = [
     path('veriler/', Statistics.as_view()),
     path('sonlanan/', FinishedProjectApiView.as_view()),
     path('download/<int:pk>', download),
+    path('dosyalar/', FilesView.as_view()),
 
 ]

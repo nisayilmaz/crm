@@ -18,7 +18,7 @@
             <div class="mx-auto col-xl-4 col-lg-5 col-md-6 d-flex flex-column">
               <div class="mt-8 card card-plain">
                 <div class="pb-0 card-header text-start">
-                  <h3 class="font-weight-bolder text-info text-gradient">Hoş Geldiniz</h3>
+                  <h3 class="font-weight-bolder text-info text-gradient">{{ $t("welcome") }}</h3>
                   <p class="mb-0">Email ve şifre ile giriş yapınız.</p>
                 </div>
                 <div class="card-body">
@@ -36,6 +36,9 @@
                         color="info"
                         full-width
                       >GİRİŞ YAP</vsud-button >
+                        <select v-model="$i18n.locale" id="locale"  @change="changeLocale">
+                            <option v-for="locale in $i18n.availableLocales" :value="locale">{{ locale }}</option>
+                        </select>
                     </div>
                   </form>
                 </div>
@@ -47,7 +50,8 @@
                   class="login-img bg-cover oblique-image position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6"
                   :style="{
                     backgroundImage:
-                      `url(${logo})`,
+                      // `url(${logo})`,
+                      `url('/static${logo}')`
                   }"
                 ></div>
               </div>
@@ -67,6 +71,7 @@ import VsudButton from "@/components/VsudButton.vue";
 import bgImg from "@/assets/img/curved-images/curved9.jpg"
 import logo from "@/assets/img/tr7_logo_big.png"
 import axios from "axios";
+
 const body = document.getElementsByTagName("body")[0];
 
 export default {
@@ -101,6 +106,10 @@ export default {
     body.classList.add("bg-gray-100");
   },
     methods: {
+        changeLocale (event) {
+            i18n.global.locale = event.target.value;
+        },
+
         async login(e) {
             e.preventDefault();
             try {

@@ -377,7 +377,7 @@ export default {
         this.formatObj(this.projects);
         this.projects = this.projects.filter(project => project.poc_request !== 'Gerçekleşti');
         if (this.filter !== "0") {
-            this.projects = this.projects.filter(project => project.client === this.filter || project.partner === this.filter)
+            this.projects = this.projects.filter(project => project.client === this.filter || project.partner === parseInt(this.filter))
         }
 
     }
