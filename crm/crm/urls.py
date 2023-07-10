@@ -24,7 +24,6 @@ from .views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATICFILES_DIRS[0]}),
     path('api/', include('relations.urls')),
     path('api/auth/', include('accounts.urls')),
     path('', index, name='index'),
