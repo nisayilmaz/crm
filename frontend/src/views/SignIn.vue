@@ -36,9 +36,9 @@
                         color="info"
                         full-width
                       >GİRİŞ YAP</vsud-button >
-                        <select v-model="$i18n.locale" id="locale"  @change="changeLocale">
-                            <option v-for="locale in $i18n.availableLocales" :value="locale">{{ locale }}</option>
-                        </select>
+<!--                        <select v-model="$i18n.locale" id="locale"  @change="changeLocale">-->
+<!--                            <option v-for="locale in $i18n.availableLocales" :value="locale">{{ locale }}</option>-->
+<!--                        </select>-->
                     </div>
                   </form>
                 </div>
