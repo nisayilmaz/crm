@@ -20,17 +20,8 @@ import "./assets/css/nucleo-svg.css";
 import SoftUIDashboard from "./soft-ui-dashboard";
 import axios from "axios";
 import Popper from "vue3-popper";
-import messages from "@intlify/unplugin-vue-i18n/messages";
-import {createI18n} from "vue-i18n";
 
-const i18n = createI18n({
-    legacy: false,
-    globalInjection: true,
-    locale: "tr",
-    fallbackLocale: "tr",
-    availableLocales: ["en", "tr"],
-    messages: messages,
-});
+
 
 router.beforeEach(async (to, from, next) => {
     var isAuthenticated = true // check if user is authenticated
@@ -62,7 +53,6 @@ router.beforeEach(async (to, from, next) => {
         .use(store)
         .use(router)
         .use(SoftUIDashboard)
-        .use(i18n)
             .mount('#app')
       };
      

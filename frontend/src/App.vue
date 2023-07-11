@@ -57,6 +57,7 @@ export default {
   },
   beforeMount() {
     this.$store.state.isTransparent = "bg-transparent";
+    this.$store.state.isDev = import.meta.env.DEV;
   },
   methods: {
     ...mapMutations(["toggleConfigurator", "navbarMinimize"]),
