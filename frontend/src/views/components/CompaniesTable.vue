@@ -71,9 +71,9 @@
                 <p class="text-xs font-weight-bold mb-0">{{ company.address }}</p>
               </td>
               <td class="align-middle">
-                <a class="me-4 text-secondary font-weight-bold text-xs" >
-                  <i class="far fa-edit"></i>
-                </a>
+<!--                <a class="me-4 text-secondary font-weight-bold text-xs" >-->
+<!--                  <i class="far fa-edit"></i>-->
+<!--                </a>-->
 
                 <a href="javascript:;" class="me-4 text-secondary font-weight-bold text-xs" @click="deleteCompany($event, company.id)"> 
                   <i class="far fa-trash-alt me-2"></i>

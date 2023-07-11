@@ -137,7 +137,7 @@ export default {
 
                 Swal.fire(
                     'Güncellendi',
-                    'Fırsat Başarıyla Güncellendi!',
+                    'Kurum/İş Ortağı Başarıyla Güncellendi!',
                     'success'
                 );
                 const companyRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/${this.id}`, {
