@@ -129,6 +129,7 @@ import moment from "moment";
 import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/default.css';
 import VsudProgress from "@/components/VsudProgress.vue";
+import axiosInstance from "@/utils/utils";
 
 export default {
   name: "FinishedProjectsTable",
@@ -157,51 +158,27 @@ export default {
   },
   async created() {
     this.loading = true
-    const clientsResp = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/client`,{
-            headers: {
-                Authorization : `${localStorage.getItem("accessToken")}`
-            }
-      });
+    const clientsResp = await axiosInstance.get(`/kurumlar/rol/client`);
     if(clientsResp.data.data){
       this.clients = clientsResp.data.data;
     }
-    const partnersRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/partner`, {
-        headers: {
-            Authorization : `${localStorage.getItem("accessToken")}`
-        }
-    });
+    const partnersRes = await axiosInstance.get(`/kurumlar/rol/partner`);
     if(partnersRes.data.data){
       this.partners = partnersRes.data.data;
     }
 
-    const productRes = await axios.get(`http://${window.location.hostname}:5000/api/urunler`, {
-        headers: {
-            Authorization : `${localStorage.getItem("accessToken")}`
-        }
-    });
+    const productRes = await axiosInstance.get(`/urunler`);
         this.products = productRes.data?.data;
 
-    const projectsRes = await axios.get(`http://${window.location.hostname}:5000/api/sonlanan/`, {
-        headers: {
-            Authorization : `${localStorage.getItem("accessToken")}`
-        }
-    });
+    const projectsRes = await axiosInstance.get(`http://${window.location.hostname}:5000/api/sonlanan/`);
     if(projectsRes) {
         this.projects = projectsRes.data.data;
         this.formatObj(this.projects);
     }
-    const peopleResp =  await axios.get(`http://${window.location.hostname}:5000/api/kisiler`, {
-        headers: {
-            Authorization : `${localStorage.getItem("accessToken")}`
-        }
-    });
+    const peopleResp =  await axiosInstance.get(`/kisiler`);
     this.people = peopleResp.data.data
 
-    const usersRes = await axios.get(`http://${window.location.hostname}:5000/api/auth/kullanicilar`,{
-        headers: {
-            Authorization : `${localStorage.getItem("accessToken")}`
-        }
-    });
+    const usersRes = await axiosInstance.get(`/auth/kullanicilar`);
     if(usersRes.data.data){
         this.users = usersRes.data.data;
     }
@@ -231,10 +208,8 @@ export default {
     },
 
     async download(id) {
-          let response = await axios.get(`http://${window.location.hostname}:5000/api/download/${id}`, {
+          let response = await axiosInstance.get(`/download/${id}`, {
               responseType:"blob",
-              Authorization: `${localStorage.getItem("accessToken")}`,
-
           })
         let filename = "sozlesme.pdf"
         if (typeof response.headers["content-disposition"] === "string") {

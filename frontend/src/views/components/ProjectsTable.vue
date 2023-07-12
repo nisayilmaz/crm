@@ -301,6 +301,7 @@ import VsudProgress from "@/components/VsudProgress.vue";
 import {th} from "vuetify/locale";
 import Swal from "sweetalert2";
 import projects from "@/views/Projects.vue";
+import axiosInstance from "@/utils/utils";
 export default {
   name: "ProjectsTable",
   components: {
@@ -343,35 +344,19 @@ export default {
   },
   async created() {
     this.loading = true
-    const clientsResp = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/client`,{
-            headers: {
-                Authorization : `${localStorage.getItem("accessToken")}`
-            }
-      });
+    const clientsResp = await axiosInstance.get(`/kurumlar/rol/client`);
     if(clientsResp.data.data){
       this.clients = clientsResp.data.data;
     }
-    const partnersRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/partner`, {
-        headers: {
-            Authorization : `${localStorage.getItem("accessToken")}`
-        }
-    });
+    const partnersRes = await axiosInstance.get(`/kurumlar/rol/partner`);
     if(partnersRes.data.data){
       this.partners = partnersRes.data.data;
     }
 
-    const productRes = await axios.get(`http://${window.location.hostname}:5000/api/urunler`, {
-        headers: {
-            Authorization : `${localStorage.getItem("accessToken")}`
-        }
-    });
+    const productRes = await axiosInstance.get(`/urunler`);
         this.products = productRes.data?.data;
 
-    const projectsRes = await axios.get(`http://${window.location.hostname}:5000/api/firsatlar`, {
-        headers: {
-            Authorization : `${localStorage.getItem("accessToken")}`
-        }
-    });
+    const projectsRes = await axiosInstance.get(`/firsatlar`);
     if(projectsRes) {
         this.projects = projectsRes.data.data;
         this.formatObj(this.projects);
@@ -381,18 +366,10 @@ export default {
         }
 
     }
-    const peopleResp =  await axios.get(`http://${window.location.hostname}:5000/api/kisiler`, {
-        headers: {
-            Authorization : `${localStorage.getItem("accessToken")}`
-        }
-    });
+    const peopleResp =  await axiosInstance.get(`/kisiler`);
     this.people = peopleResp.data.data
 
-    const usersRes = await axios.get(`http://${window.location.hostname}:5000/api/auth/kullanicilar`,{
-        headers: {
-            Authorization : `${localStorage.getItem("accessToken")}`
-        }
-    });
+    const usersRes = await axiosInstance.get(`/auth/kullanicilar`);
     if(usersRes.data.data){
         this.users = usersRes.data.data;
     }
@@ -429,7 +406,7 @@ export default {
     async addProject(e) {
       e.preventDefault();
       try {
-          const response = await axios.post(`http://${window.location.hostname}:5000/api/firsatlar`, {
+          const response = await axiosInstance.post(`/firsatlar`, {
               client: this.client,
               partner: this.partner,
               registration_date: this.startDate,
@@ -443,17 +420,9 @@ export default {
               probability: this.probability,
               count: this.count,
               budget: this.budget
-          }, {
-              headers: {
-                  Authorization : `${localStorage.getItem("accessToken")}`
-              }
           });
           let lastId = response.data.data.id;
-          const projectsRes = await axios.get(`http://${window.location.hostname}:5000/api/firsatlar/${lastId}`, {
-              headers: {
-                  Authorization : `${localStorage.getItem("accessToken")}`
-              }
-          });
+          const projectsRes = await axiosInstance.get(`/firsatlar/${lastId}`);
           this.formatObj(projectsRes.data.data)
           this.projects.push(projectsRes.data.data);
           this.client = null

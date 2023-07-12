@@ -96,6 +96,7 @@ import ProjectCard from "@/views/components/ProjectCard.vue";
 import Swal from "sweetalert2";
 import NavPill from "./components/NavPill.vue";
 import moment from "moment";
+import axiosInstance from "@/utils/utils";
 
 export default {
     name: "ProjectDetail",
@@ -119,18 +120,10 @@ export default {
         };
     },
     async created() {
-        const projectsRes = await axios.get(`http://${window.location.hostname}:5000/api/firsatlar/${this.id}`, {
-            headers: {
-                Authorization : `${localStorage.getItem("accessToken")}`
-            }
-        });
+        const projectsRes = await axiosInstance.get(`/firsatlar/${this.id}`);
         this.project = projectsRes.data.data
 
-        const notesRes = await axios.get(`http://${window.location.hostname}:5000/api/notlar/${this.id}`, {
-            headers: {
-                Authorization : `${localStorage.getItem("accessToken")}`
-            }
-        });
+        const notesRes = await axiosInstance.get(`/notlar/${this.id}`);
         this.notes = notesRes.data.data
         this.filteredNotes = notesRes.data.data
     },
@@ -157,10 +150,7 @@ export default {
                 cancelButtonText:'İptal'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    await axios.delete(`http://${window.location.hostname}:5000/api/notlar/${noteId}`, {
-                        headers: {
-                            Authorization : `${localStorage.getItem("accessToken")}`
-                        }});
+                    await axiosInstance.delete(`/notlar/${noteId}`);
                     this.filteredNotes = this.filteredNotes.filter(note => note.id !== noteId);
 
                 }
@@ -179,15 +169,11 @@ export default {
         async addNote(e) {
             e.preventDefault()
             try {
-                const response = await axios.post(`http://${window.location.hostname}:5000/api/notlar/`, {
+                const response = await axiosInstance.post(`/notlar/`, {
                     title: this.title,
                     note: this.note,
                     project: this.project.id,
                     category: this.type
-                }, {
-                    headers: {
-                        Authorization: `${localStorage.getItem("accessToken")}`
-                    }
                 });
                 if(response.data.data){
                     this.notes.splice(0, 0, response.data.data);

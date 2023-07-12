@@ -22,7 +22,7 @@ STATIC_URL = '/static/'
 # Add these new lines
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-    #os.path.join(BASE_DIR, '../frontend/dist'),
+    os.path.join(BASE_DIR, '../frontend/dist'),
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -33,7 +33,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+ALLOWED_HOSTS =["*"] #os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost,").split(",")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
@@ -144,6 +144,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5050",
     "http://192.168.1.121:5050",
     "http://192.168.1.169:5050",
+    "http://192.168.1.111:5000",
+    "*"
 
 ]
 CORS_EXPOSE_HEADERS = [

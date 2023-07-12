@@ -92,6 +92,7 @@ import 'vue-slider-component/theme/default.css';
 import Swal from 'sweetalert2'
 import PeopleTable from "@/views/components/PeopleTable.vue";
 import ProjectsTable from "@/views/components/ProjectsTable.vue";
+import axiosInstance from "@/utils/utils";
 
 export default {
     name: "ProjectCard",
@@ -113,26 +114,18 @@ export default {
         }
     },
     async created() {
-        const companyRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/${this.id}`, {
-            headers: {
-                Authorization: `${localStorage.getItem("accessToken")}`
-            }
-        });
+        const companyRes = await axiosInstance.get(`/kurumlar/${this.id}`);
         this.company = companyRes.data.data
     },
     computed: {},
     methods: {
         async submitEdit() {
             try {
-                const response = await axios.put(`http://${window.location.hostname}:5000/api/kurumlar/${this.id}/`, {
+                const response = await axiosInstance.put(`/kurumlar/${this.id}/`, {
                     name: this.name,
                     phone: this.phone,
                     email: this.email,
                     address: this.address,
-                }, {
-                    headers: {
-                        Authorization: `${localStorage.getItem("accessToken")}`
-                    }
                 });
 
                 Swal.fire(
@@ -140,11 +133,7 @@ export default {
                     'Kurum/İş Ortağı Başarıyla Güncellendi!',
                     'success'
                 );
-                const companyRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/${this.id}`, {
-                    headers: {
-                        Authorization: `${localStorage.getItem("accessToken")}`
-                    }
-                });
+                const companyRes = await axiosInstance.get(`/kurumlar/${this.id}`);
                 this.company = companyRes.data.data
 
             } catch (err) {
@@ -183,11 +172,7 @@ export default {
                 cancelButtonText: 'İptal'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    await axios.delete(`http://${window.location.hostname}:5000/api/kurumlar/${id}`, {
-                        headers: {
-                            Authorization: `${localStorage.getItem("accessToken")}`
-                        }
-                    });
+                    await axiosInstance.delete(`/kurumlar/${id}`);
                     this.companies = this.companies.filter(company => company.id !== id);
 
                 }

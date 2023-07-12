@@ -18,17 +18,15 @@ import router from "./router";
 import "./assets/css/nucleo-icons.css";
 import "./assets/css/nucleo-svg.css";
 import SoftUIDashboard from "./soft-ui-dashboard";
-import axios from "axios";
 import Popper from "vue3-popper";
+import axiosInstance from "@/utils/utils";
 
 
 
 router.beforeEach(async (to, from, next) => {
     var isAuthenticated = true // check if user is authenticated
     try{
-        const response = await axios.get(`http://${window.location.hostname}:5000/api/auth/check/`, {headers: {
-                Authorization : `${localStorage.getItem("accessToken")}`
-            }});
+        const response = await axiosInstance.get(`/auth/check/`);
 
         if(response.data?.role) {
             store.state.role = response.data.role;

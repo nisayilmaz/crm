@@ -95,6 +95,7 @@
 <script>
 import axios from "axios";
 import vsudAlert from "@/components/VsudAlert.vue";
+import axiosInstance from "@/utils/utils";
 export default {
     name: "UsersTable",
     components: {
@@ -121,19 +122,13 @@ export default {
     },
     async created() {
         this.loading = true
-        const companiesRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/`,
-            {headers: {
-                    Authorization : `${localStorage.getItem("accessToken")}`
-                }});
+        const companiesRes = await axiosInstance.get(`/kurumlar/`);
         if (companiesRes.data.status === "success") {
             this.companies = companiesRes.data.data;
         }
 
         try {
-            const usersRes = await axios.get(`http://${window.location.hostname}:5000/api/auth/kullanicilar`,
-                {headers: {
-                        Authorization : `${localStorage.getItem("accessToken")}`
-                    }});
+            const usersRes = await axiosInstance.get(`/auth/kullanicilar`);
             this.users = usersRes.data.data
         }
         catch (err) {
@@ -145,7 +140,7 @@ export default {
         async addUser(e) {
             try {
                 e.preventDefault();
-                const resp = await axios.post(`http://${window.location.hostname}:5000/api/auth/register/`, {
+                const resp = await axiosInstance.post(`/auth/register/`, {
                     password: this.password,
                     email: this.email,
                     role: this.role,
@@ -170,11 +165,7 @@ export default {
         async deletePerson(e, id) {
             e.preventDefault();
             try {
-                await axios.delete(`http://${window.location.hostname}:5000/api/auth/kullanicilar/${id}`, {
-                    headers: {
-                        Authorization : `${localStorage.getItem("accessToken")}`
-                    }
-                });
+                await axiosInstance.delete(`/auth/kullanicilar/${id}`);
                 this.users = this.users.filter(person => person.id !== id);
             }
             catch (err) {

@@ -169,6 +169,7 @@ import OrdersCard from "./components/OrdersCard.vue";
 import ProjectsCard from "./components/ProjectsCard.vue";
 
 import axios from "axios";
+import axiosInstance from "@/utils/utils";
 
 export default {
   name: "DashboardDefault",
@@ -204,20 +205,12 @@ export default {
   },
 
     async created() {
-        const projectsRes = await axios.get(`http://${window.location.hostname}:5000/api/firsatlar`, {
-            headers: {
-                Authorization : `${localStorage.getItem("accessToken")}`
-            }
-        });
+        const projectsRes = await axiosInstance.get(`firsatlar`);
         if(projectsRes) {
             this.projects = projectsRes.data.data;
         }
 
-        const statistics = await axios.get(`http://${window.location.hostname}:5000/api/veriler/`, {
-            headers: {
-                Authorization: `${localStorage.getItem("accessToken")}`
-            }
-        });
+        const statistics = await axiosInstance.get(`/veriler/`);
         if (statistics.data.data) {
             let statisticsData = statistics.data.data
 

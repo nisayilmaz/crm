@@ -91,6 +91,7 @@
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
+import axiosInstance from "@/utils/utils";
 export default {
 
   name: "CompaniesTable",
@@ -135,12 +136,7 @@ export default {
   async created() {
       try {
           this.loading = true
-
-          const response = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/${this.type}`, {
-              headers: {
-                  Authorization : `${localStorage.getItem("accessToken")}`
-              }
-          });
+          const response = await axiosInstance.get(`/kurumlar/rol/${this.type}`)
           if (response.status === 200) {
               if (!Array.isArray(response.data.data)){
                   this.companies = []
@@ -159,15 +155,13 @@ export default {
     async addCompany(e) {
       e.preventDefault();
       try {
-          const response = await axios.post(`http://${window.location.hostname}:5000/api/kurumlar/`, {
+          const response = await axiosInstance.post(`/kurumlar/`, {
               name: this.name,
               role: this.type,
               email: this.email,
               address: this.address,
               phone: this.phone
-          }, {headers: {
-              Authorization : `${localStorage.getItem("accessToken")}`
-          }});
+          });
           this.companies.push(response.data.data)
           this.name = ""
           this.phone = ""
@@ -196,10 +190,8 @@ export default {
             cancelButtonText:'İptal'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                await axios.delete(`http://${window.location.hostname}:5000/api/kurumlar/${id}`, {
-                    headers: {
-                        Authorization : `${localStorage.getItem("accessToken")}`
-                    }});
+                await axiosInstance.delete(`/kurumlar/${id}`, {
+                   });
                 this.companies = this.companies.filter(company => company.id !== id);
 
             }

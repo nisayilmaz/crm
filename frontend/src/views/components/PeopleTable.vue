@@ -121,6 +121,7 @@
   <script>
   import axios from "axios";
   import Swal from "sweetalert2";
+  import axiosInstance from "@/utils/utils";
   export default {
     name: "PeopleTable",
     props: {
@@ -147,18 +148,11 @@
     },
     async created() {
         this.loading = true
-        const companiesRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/`,
-            {headers: {
-                    Authorization : `${localStorage.getItem("accessToken")}`
-                }});
+        const companiesRes = await axiosInstance.get(`/kurumlar/`);
         if (companiesRes.data.status === "success") {
             this.companies = companiesRes.data.data;
         }
-        const people = await axios.get(`http://${window.location.hostname}:5000/api/kisiler/`, {
-            headers: {
-                Authorization : `${localStorage.getItem("accessToken")}`
-            }
-        });
+        const people = await axiosInstance.get(`/kisiler/`);
         this.people = people.data.data;
         if(this.company_filter !== '0') {
             this.people = this.people.filter(person => person.company === parseInt(this.company_filter))
@@ -180,25 +174,15 @@
       async addPerson(e) {
         e.preventDefault();
         try {
-            const response = await axios.post(`http://${window.location.hostname}:5000/api/kisiler/`, {
+            const response = await axiosInstance.post(`/kisiler/`, {
                     first_name : this.first_name,
                     last_name : this.last_name,
                     phone : this.phone,
                     email : this.email,
                     company : this.company
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization : `${localStorage.getItem("accessToken")}`
-                    }
                 });
             let lastId =  response.data.data.id;
-            const personRes = await axios.get(`http://${window.location.hostname}:5000/api/kisiler/${lastId}`, {
-                headers: {
-                    Authorization : `${localStorage.getItem("accessToken")}`
-                }
-            });
+            const personRes = await axiosInstance.get(`/kisiler/${lastId}`);
             this.people.push(personRes.data.data);
         }
         catch (err) {
@@ -227,11 +211,7 @@
               cancelButtonText:'İptal'
           }).then(async (result) => {
               if (result.isConfirmed) {
-                  await axios.delete(`http://${window.location.hostname}:5000/api/kisiler/${id}`, {
-                      headers: {
-                          Authorization : `${localStorage.getItem("accessToken")}`
-                      }
-                  });
+                  await axiosInstance.delete(`/kisiler/${id}`);
                   this.people = this.people.filter(person => person.id !== id);
               }
           })

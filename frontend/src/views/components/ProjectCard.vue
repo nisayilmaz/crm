@@ -182,17 +182,17 @@
                     </div>
 
                     <div v-if="poc === '8' || poc === 8" class="mb-3">
-                        <label for="finDate" class="form-label">Bitiş Tarihi</label>
+                        <label for="finDate" class="form-label">Bitiş Tarihi*</label>
                         <input v-model="finDate" type="date" class="ps-0 form-control"  id="finDate">
                     </div>
 
                     <div v-if="poc === '8' || poc === 8" class="mb-3">
-                        <label for="invoiceDate" class="form-label">Fatura Tarihi</label>
+                        <label for="invoiceDate" class="form-label">Fatura Tarihi*</label>
                         <input  v-model="invoiceDate" type="date" class="ps-0 form-control" id="invoiceDate">
                     </div>
 
                     <div v-if="poc === '8' || poc === 8" class="mb-3">
-                        <label for="invoiceAmount" class="form-label">Fatura Miktarı</label>
+                        <label for="invoiceAmount" class="form-label">Fatura Miktarı*</label>
                         <input  v-model="invoiceAmount" type="text" class="ps-0 form-control" id="invoiceAmount">
                     </div>
                 </div>
@@ -210,6 +210,7 @@ import moment from "moment/moment";
 import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/default.css';
 import Swal from 'sweetalert2'
+import axiosInstance from "@/utils/utils";
 
 export default {
     name: "ProjectCard",
@@ -254,42 +255,22 @@ export default {
         }
     },
     async created() {
-        const clientsResp = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/client`, {
-            headers: {
-                Authorization: `${localStorage.getItem("accessToken")}`
-            }
-        });
+        const clientsResp = await axiosInstance.get(`/kurumlar/rol/client`);
         if (clientsResp.data.data) {
             this.clients = clientsResp.data.data;
         }
-        const partnersRes = await axios.get(`http://${window.location.hostname}:5000/api/kurumlar/rol/partner`, {
-            headers: {
-                Authorization: `${localStorage.getItem("accessToken")}`
-            }
-        });
+        const partnersRes = await axiosInstance.get(`/kurumlar/rol/partner`);
         if (partnersRes.data.data) {
             this.partners = partnersRes.data.data;
         }
 
-        const productRes = await axios.get(`http://${window.location.hostname}:5000/api/urunler`, {
-            headers: {
-                Authorization: `${localStorage.getItem("accessToken")}`
-            }
-        });
+        const productRes = await axiosInstance.get(`/urunler`);
         this.products = productRes.data?.data;
 
-        const peopleResp = await axios.get(`http://${window.location.hostname}:5000/api/kisiler`, {
-            headers: {
-                Authorization: `${localStorage.getItem("accessToken")}`
-            }
-        });
+        const peopleResp = await axiosInstance.get(`/kisiler`);
         this.people = peopleResp.data.data
 
-        const usersRes = await axios.get(`http://${window.location.hostname}:5000/api/auth/kullanicilar`, {
-            headers: {
-                Authorization: `${localStorage.getItem("accessToken")}`
-            }
-        });
+        const usersRes = await axiosInstance.get(`/auth/kullanicilar`);
         if (usersRes.data.data) {
             this.users = usersRes.data.data;
         }
@@ -396,14 +377,9 @@ export default {
                     formData.append('end_date', this.finDate);
                     formData.append('project', this.project.id);
                     formData.append('registered_by', this.user);
-                    let resp = await axios.post(`http://${window.location.hostname}:5000/api/sonlanan/`, formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                            Authorization: `${localStorage.getItem("accessToken")}`
-                        }
-                    })
+                    let resp = await axiosInstance.post(`/sonlanan/`, formData)
                 }
-                const response = await axios.put(`http://${window.location.hostname}:5000/api/firsatlar/${id}/`, {
+                const response = await axiosInstance.put(`/firsatlar/${id}/`, {
                     client: this.client,
                     partner: this.partner,
                     registration_date: this.startDate,
@@ -418,10 +394,6 @@ export default {
                     count: this.count,
                     budget: this.budget,
                     registered_by: this.user
-                }, {
-                    headers: {
-                        Authorization: `${localStorage.getItem("accessToken")}`
-                    }
                 });
                 Swal.fire(
                     'Güncellendi',
