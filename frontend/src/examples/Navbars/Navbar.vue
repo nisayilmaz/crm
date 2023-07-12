@@ -225,7 +225,7 @@ export default {
           let request = await axiosInstance.post(`/auth/logout/`, null);
           if(request.status === 204) {
               localStorage.removeItem("accessToken");
-              this.$router.push('/sign-in')
+              this.$router.push('/log-in')
               this.$store.state.role = "";
           }
       },

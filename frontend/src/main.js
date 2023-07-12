@@ -35,11 +35,14 @@ router.beforeEach(async (to, from, next) => {
     catch(err){
         isAuthenticated = false
     }
-    if(to.name === 'Users' && store.state.role !== 1) {
+    if (isAuthenticated && to.name === "Log In") {
+        next('/dashboard')
+    }
+    else if(to.name === 'Users' && store.state.role !== 1) {
         next('/dashboard')
     }
     else if (to.meta.requiresAuth && !isAuthenticated) {
-        next('/sign-in')
+        next('/log-in')
     } else {
         next()
     }

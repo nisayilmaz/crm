@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import {createRouter, createWebHashHistory, createWebHistory} from "vue-router";
 import Dashboard from "@/views/Dashboard.vue";
 import SignIn from "@/views/SignIn.vue";
 import Projects from "@/views/Projects.vue";
@@ -14,7 +14,7 @@ const routes = [
   {
     path: "/",
     name: "/",
-    redirect: "/dashboard",
+    redirect: "/log-in",
   },
   {
     path: "/dashboard",
@@ -25,7 +25,8 @@ const routes = [
     }
   },
   {
-    path: "/kurumlar",
+    //Todo: Kurumun ingilizcesi?
+    path: "/companies",
     name: "Companies",
     component: Companies,
     meta: {
@@ -33,7 +34,7 @@ const routes = [
     }
   },
   {
-    path: "/is-ortaklari",
+    path: "/partners",
     name: "Partners",
     component: Partners,
     meta: {
@@ -41,7 +42,8 @@ const routes = [
     }
   },
   {
-    path: "/firsatlar",
+    //Todo: firsatın ingilizcesi???
+    path: "/opportunities",
     name: "Projects",
     component: Projects,
     meta: {
@@ -49,6 +51,8 @@ const routes = [
     }
   },
   {
+    //Todo: firsatın ingilizcesi???
+
     path: "/gerceklesen-firsatlar",
     name: "FinishedProjects",
     component: FinishedProjects,
@@ -57,7 +61,7 @@ const routes = [
     }
   },
   {
-    path: "/kisiler",
+    path: "/people",
     name: "People",
     component: People,
     meta: {
@@ -65,7 +69,7 @@ const routes = [
     }
   },
   {
-    path: "/hesaplar",
+    path: "/accounts",
     name: "Users",
     component: Users,
     meta: {
@@ -73,19 +77,19 @@ const routes = [
     }
   },
   {
-    path: "/sign-in",
-    name: "Sign In",
+    path: "/log-in",
+    name: "Log In",
     component: SignIn,
   },
   {
-    path: "/firsat/:id",
-    name: "bill",
+    path: "/opportunity/:id",
+    name: "Opportunities",
     component: ProjectDetail,
     props: true
 
   },
   {
-    path: "/kurum/:id",
+    path: "/company/:id",
     name: "CompanyDetail",
     component: CompanyDetail,
     props: true
@@ -94,7 +98,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   linkActiveClass: "active",
 });

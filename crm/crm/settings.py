@@ -145,8 +145,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://192.168.1.121:5050",
     "http://192.168.1.169:5050",
     "http://192.168.1.111:5000",
-    "*"
-
 ]
 CORS_EXPOSE_HEADERS = [
     "responseType",
