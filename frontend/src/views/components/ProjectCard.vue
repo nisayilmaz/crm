@@ -210,7 +210,7 @@ import moment from "moment/moment";
 import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/default.css';
 import Swal from 'sweetalert2'
-import axiosInstance from "@/utils/utils";
+import {axiosInstance} from "@/utils/utils";
 
 export default {
     name: "ProjectCard",

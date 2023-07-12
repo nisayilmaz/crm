@@ -301,7 +301,7 @@ import VsudProgress from "@/components/VsudProgress.vue";
 import {th} from "vuetify/locale";
 import Swal from "sweetalert2";
 import projects from "@/views/Projects.vue";
-import axiosInstance from "@/utils/utils";
+import {axiosInstance} from "@/utils/utils";
 export default {
   name: "ProjectsTable",
   components: {

@@ -169,7 +169,7 @@ import OrdersCard from "./components/OrdersCard.vue";
 import ProjectsCard from "./components/ProjectsCard.vue";
 
 import axios from "axios";
-import axiosInstance from "@/utils/utils";
+import {axiosInstance} from "@/utils/utils";
 
 export default {
   name: "DashboardDefault",

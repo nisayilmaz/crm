@@ -19,7 +19,7 @@ import "./assets/css/nucleo-icons.css";
 import "./assets/css/nucleo-svg.css";
 import SoftUIDashboard from "./soft-ui-dashboard";
 import Popper from "vue3-popper";
-import axiosInstance from "@/utils/utils";
+import {axiosInstance} from "@/utils/utils";
 
 
 

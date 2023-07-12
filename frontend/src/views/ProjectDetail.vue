@@ -96,7 +96,7 @@ import ProjectCard from "@/views/components/ProjectCard.vue";
 import Swal from "sweetalert2";
 import NavPill from "./components/NavPill.vue";
 import moment from "moment";
-import axiosInstance from "@/utils/utils";
+import {axiosInstance} from "@/utils/utils";
 
 export default {
     name: "ProjectDetail",

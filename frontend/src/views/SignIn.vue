@@ -73,7 +73,7 @@ import VsudInput from "@/components/VsudInput.vue";
 import VsudButton from "@/components/VsudButton.vue";
 import bgImg from "@/assets/img/curved-images/curved9.jpg"
 import logo from "@/assets/img/tr7_logo_big.png"
-import axios from "axios";
+import {noAuthAxiosInstance} from "@/utils/utils";
 
 const body = document.getElementsByTagName("body")[0];
 
@@ -114,7 +114,7 @@ export default {
         async login(e) {
             e.preventDefault();
             try {
-                const response = await axios.post(`http://${window.location.hostname}:5000/api/auth/login/`, {
+                const response = await noAuthAxiosInstance.post(`/auth/login/`, {
                     username:this.username,
                     password:this.password,
                 });

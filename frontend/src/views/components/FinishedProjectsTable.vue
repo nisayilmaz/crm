@@ -130,7 +130,7 @@ import moment from "moment";
 import VueSlider from "vue-slider-component";
 import 'vue-slider-component/theme/default.css';
 import VsudProgress from "@/components/VsudProgress.vue";
-import axiosInstance from "@/utils/utils";
+import {axiosInstance} from "@/utils/utils";
 
 export default {
   name: "FinishedProjectsTable",

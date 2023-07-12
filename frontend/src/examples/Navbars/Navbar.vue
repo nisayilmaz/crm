@@ -173,7 +173,7 @@
 <script>
 import Breadcrumbs from "../Breadcrumbs.vue";
 import { mapMutations, mapActions } from "vuex";
-import axios from "axios";
+import {axiosInstance} from "@/utils/utils";
 
 export default {
   name: "NavbarComponent",
@@ -222,11 +222,7 @@ export default {
     ...mapActions(["toggleSidebarColor"]),
       async logout(e) {
           e.preventDefault();
-          let request = await axios.post(`http://${window.location.hostname}:5000/api/auth/logout/`, null, {
-              headers: {
-                  Authorization : `${localStorage.getItem("accessToken")}`
-              }
-          });
+          let request = await axiosInstance.post(`/auth/logout/`, null);
           if(request.status === 204) {
               localStorage.removeItem("accessToken");
               this.$router.push('/sign-in')

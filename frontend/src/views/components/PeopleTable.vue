@@ -121,7 +121,7 @@
   <script>
   import axios from "axios";
   import Swal from "sweetalert2";
-  import axiosInstance from "@/utils/utils";
+  import {axiosInstance} from "@/utils/utils";
   export default {
     name: "PeopleTable",
     props: {

@@ -92,7 +92,7 @@ import 'vue-slider-component/theme/default.css';
 import Swal from 'sweetalert2'
 import PeopleTable from "@/views/components/PeopleTable.vue";
 import ProjectsTable from "@/views/components/ProjectsTable.vue";
-import axiosInstance from "@/utils/utils";
+import {axiosInstance} from "@/utils/utils";
 
 export default {
     name: "ProjectCard",

@@ -95,7 +95,7 @@
 <script>
 import axios from "axios";
 import vsudAlert from "@/components/VsudAlert.vue";
-import axiosInstance from "@/utils/utils";
+import {axiosInstance} from "@/utils/utils";
 export default {
     name: "UsersTable",
     components: {
